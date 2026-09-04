@@ -204,6 +204,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             'update'  => 'tv.update',
             'destroy' => 'tv.destroy',
         ]);
+        Route::get('tv-layout', [TvController::class, 'layout'])->name('tv.layout');
+        Route::post('tv-layout', [TvController::class, 'layoutUpdate'])->name('tv.layout.update');
 
         // Users
         Route::resource('users', UserController::class)->names([

@@ -111,7 +111,28 @@
     </header>
 
     {{-- ══ MAIN CONTENT ══ --}}
-    <main style="flex:1; display:grid; grid-template-columns: minmax(0,1.25fr) minmax(0,1.3fr) minmax(0,1.25fr); overflow:hidden;">
+    @php
+        $colKiri        = \App\Models\Setting::get('tv_col_kiri',        '1.1');
+        $colTengah      = \App\Models\Setting::get('tv_col_tengah',      '1.8');
+        $colKanan       = \App\Models\Setting::get('tv_col_kanan',       '1.1');
+        $headerHeight   = \App\Models\Setting::get('tv_header_height',   '64');
+        $footerHeight   = \App\Models\Setting::get('tv_footer_height',   '36');
+        $showKiri       = \App\Models\Setting::get('tv_show_kiri',       '1') === '1';
+        $showKanan      = \App\Models\Setting::get('tv_show_kanan',      '1') === '1';
+        $showFooter     = \App\Models\Setting::get('tv_show_footer',     '1') === '1';
+        $showShalatJum  = \App\Models\Setting::get('tv_show_shalat_jum', '1') === '1';
+        $showCountdown  = \App\Models\Setting::get('tv_show_countdown',  '1') === '1';
+        $showDonasi     = \App\Models\Setting::get('tv_show_donasi',     '1') === '1';
+        $showWifi       = \App\Models\Setting::get('tv_show_wifi',       '1') === '1';
+        $showKegiatan   = \App\Models\Setting::get('tv_show_kegiatan',   '1') === '1';
+
+        // Grid columns — hide kiri/kanan jika dinonaktifkan
+        $gridCols = '';
+        if ($showKiri)   $gridCols .= "minmax(0,{$colKiri}fr) ";
+        $gridCols .= "minmax(0,{$colTengah}fr)";
+        if ($showKanan)  $gridCols .= " minmax(0,{$colKanan}fr)";
+    @endphp
+    <main style="flex:1; display:grid; grid-template-columns: {{ $gridCols }}; overflow:hidden;">
 
         {{-- ── KIRI: Jadwal Shalat ── --}}
         <div style="background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%); padding: clamp(8px,1.2vh,16px) clamp(14px,1.6vw,24px); display:flex; flex-direction:column; gap:clamp(4px,0.6vh,8px); border-right: 1px solid #bbf7d0; overflow:hidden;">
