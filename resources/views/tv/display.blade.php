@@ -161,80 +161,120 @@
         </div>
 
         {{-- ── TENGAH: Live Camera / Pengumuman ── --}}
-        <div style="background:#0f172a; display:flex; flex-direction:column; position:relative; overflow:hidden;">
+        @php
+            $streamMode    = \App\Models\Setting::get('stream_mode', 'youtube');
+            $streamIsLive  = (bool) \App\Models\Setting::get('stream_is_live', false);
+            $streamLabel   = \App\Models\Setting::get('stream_label', 'Live Masjid');
+            $cameraName    = \App\Models\Setting::get('stream_camera_name', '');
+            $youtubeUrl    = \App\Models\Setting::get('tv_live_url', '');
+            $youtubeEmbed  = '';
+            if ($youtubeUrl) {
+                if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $youtubeUrl, $m)) {
+                    $youtubeEmbed = 'https://www.youtube.com/embed/'.$m[1].'?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0&showinfo=0';
+                } elseif (str_contains($youtubeUrl, 'youtube.com/embed')) {
+                    $youtubeEmbed = $youtubeUrl;
+                }
+            }
+            $hasStream = ($streamMode === 'youtube' && $youtubeEmbed)
+                      || (in_array($streamMode, ['hls','webrtc']) && $cameraName);
+        @endphp
 
-            {{-- Live Camera Area --}}
-            <div style="flex:1; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+        <div style="background:#0a0f1a; display:flex; flex-direction:column; position:relative; overflow:hidden;"
+             x-data="tvStream({
+                mode:         '{{ $streamMode }}',
+                youtubeEmbed: '{{ $youtubeEmbed }}',
+                hlsUrl:       '{{ $cameraName ? url('/stream/hls/'.$cameraName) : '' }}',
+                tokenUrl:     '{{ url('/stream/token') }}',
+                hasStream:    {{ $hasStream ? 'true' : 'false' }},
+                streamLabel:  '{{ e($streamLabel) }}',
+                isLive:       {{ $streamIsLive ? 'true' : 'false' }},
+                announcements: {{ json_encode($displays->where('tipe', 'pengumuman')->values()->toArray()) }},
+             })">
 
-                @php
-                    $liveUrl = \App\Models\Setting::get('tv_live_url', '');
-                    $liveEmbed = '';
-                    if ($liveUrl) {
-                        // Convert YouTube watch URL to embed
-                        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $liveUrl, $m)) {
-                            $liveEmbed = 'https://www.youtube.com/embed/' . $m[1] . '?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=' . $m[1];
-                        } elseif (str_contains($liveUrl, 'youtube.com/embed')) {
-                            $liveEmbed = $liveUrl;
-                        }
-                    }
-                @endphp
+            {{-- ── Player Container ── --}}
+            <div style="flex:1; position:relative; overflow:hidden; display:flex; flex-direction:column;">
 
-                @if($liveEmbed)
-                {{-- YouTube Live Embed --}}
-                <iframe src="{{ $liveEmbed }}"
-                        style="width:100%; height:100%; border:none; display:block;"
-                        allow="autoplay; encrypted-media"
-                        allowfullscreen></iframe>
-                <div style="position:absolute; top:12px; left:12px; background:#ef4444; color:white; font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; letter-spacing:1px; display:flex; align-items:center; gap:5px;">
-                    <span style="width:6px; height:6px; background:white; border-radius:50%; display:inline-block;"></span> LIVE
+                {{-- YouTube iFrame --}}
+                <iframe x-show="mode === 'youtube' && youtubeEmbed && streamVisible"
+                        :src="iframeSrc"
+                        style="width:100%; flex:1; border:none; display:block;"
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowfullscreen
+                        x-cloak></iframe>
+
+                {{-- HLS Video Player --}}
+                <video x-show="mode === 'hls' && streamVisible"
+                       x-ref="hlsVideo"
+                       style="width:100%; flex:1; object-fit:cover; background:#000;"
+                       autoplay muted playsinline
+                       x-cloak></video>
+
+                {{-- LIVE badge --}}
+                <div x-show="streamVisible && isLive"
+                     style="position:absolute; top:12px; left:12px; z-index:10; display:flex; align-items:center; gap:6px; background:rgba(239,68,68,0.9); color:white; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; letter-spacing:1.5px; backdrop-filter:blur(4px);"
+                     x-cloak>
+                    <span style="width:7px; height:7px; background:white; border-radius:50%; animation: pulse 1.2s ease-in-out infinite;"></span>
+                    LIVE
                 </div>
-                @else
-                {{-- Placeholder saat tidak ada live stream --}}
-                <div style="position:absolute; inset:0; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);"></div>
 
-                {{-- Ornamen arabesk --}}
-                <div style="position:absolute; inset:0; opacity:0.04; background-image: radial-gradient(circle at 20% 20%, #16a34a 0%, transparent 50%), radial-gradient(circle at 80% 80%, #ca8a04 0%, transparent 50%);"></div>
+                {{-- Stream label --}}
+                <div x-show="streamVisible"
+                     style="position:absolute; top:12px; right:12px; z-index:10; background:rgba(0,0,0,0.55); color:white; font-size:10px; font-weight:600; padding:4px 10px; border-radius:8px; backdrop-filter:blur(4px); letter-spacing:1px;"
+                     x-text="streamLabel"
+                     x-cloak></div>
 
-                {{-- Konten Pengumuman --}}
-                <div style="position:relative; z-index:1; width:100%; padding: clamp(16px,2vw,32px); display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;"
-                     x-data="tvAnnouncement({{ json_encode($displays->where('tipe', 'pengumuman')->values()->toArray()) }})">
-
-                    <template x-if="items.length > 0">
-                        <div class="fade-in" :key="current" style="text-align:center; max-width:480px;">
-                            <div style="width:clamp(40px,5vw,64px); height:clamp(40px,5vw,64px); background:linear-gradient(135deg,#166534,#16a34a); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto clamp(12px,1.5vh,20px);">
-                                <svg style="width:50%; height:50%; color:white; stroke:white; fill:none;" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
-                            </div>
-                            <p style="color:#fbbf24; font-size:clamp(9px,0.85vw,12px); font-weight:700; letter-spacing:3px; text-transform:uppercase; margin-bottom:8px;">Pengumuman</p>
-                            <h3 style="color:white; font-weight:800; font-size:clamp(16px,1.8vw,26px); line-height:1.3; margin-bottom:clamp(8px,1.2vh,16px);" x-text="items[current]?.judul"></h3>
-                            <p style="color:rgba(255,255,255,0.7); font-size:clamp(12px,1.1vw,16px); line-height:1.6;" x-text="items[current]?.konten"></p>
-
-                            {{-- Dot indicator --}}
-                            <div style="display:flex; gap:6px; justify-content:center; margin-top:clamp(12px,1.5vh,20px);" x-show="items.length > 1">
-                                <template x-for="(item, i) in items" :key="i">
-                                    <div :style="i === current ? 'width:20px; background:#16a34a;' : 'width:6px; background:rgba(255,255,255,0.3);'"
-                                         style="height:6px; border-radius:3px; transition:all 0.3s;"></div>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-
-                    <template x-if="items.length === 0">
-                        <div style="text-align:center; max-width:480px;">
-                            <p class="font-arabic" dir="rtl" style="color:#fde68a; font-size:clamp(18px,2.2vw,32px); line-height:1.6; margin-bottom:16px;">إِنَّمَا يَعْمُرُ مَسَاجِدَ اللَّهِ مَنْ آمَنَ بِاللَّهِ</p>
-                            <p style="color:rgba(255,255,255,0.5); font-size:clamp(10px,0.95vw,14px); font-style:italic;">"Hanya yang memakmurkan masjid-masjid Allah ialah orang yang beriman kepada Allah."</p>
-                            <p style="color:rgba(255,255,255,0.35); font-size:clamp(9px,0.85vw,12px); margin-top:4px;">QS. At-Taubah: 18</p>
-                        </div>
-                    </template>
+                {{-- Stream error state --}}
+                <div x-show="streamError"
+                     style="position:absolute; inset:0; background:#0a0f1a; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;"
+                     x-cloak>
+                    <svg style="width:36px; height:36px; color:#374151; stroke:#374151; fill:none;" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+                    <p style="color:#6b7280; font-size:11px;">Stream tidak tersedia</p>
                 </div>
-                @endif
-            </div>
 
-            {{-- Live Camera Label (hanya saat ada live URL) --}}
-            @if(!$liveEmbed)
-            <div style="position:absolute; bottom: 12px; right: 12px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:4px 12px;">
-                <p style="color:rgba(255,255,255,0.4); font-size:10px; font-weight:600; letter-spacing:1px;">AREA LIVE CAMERA</p>
+                {{-- Placeholder / Pengumuman (saat tidak ada stream) --}}
+                <div x-show="!streamVisible && !streamError"
+                     style="position:absolute; inset:0; background:linear-gradient(135deg,#0a0f1a 0%,#0f172a 100%); display:flex; align-items:center; justify-content:center;"
+                     x-cloak>
+                    {{-- Decorative bg --}}
+                    <div style="position:absolute; inset:0; opacity:0.06; background-image:radial-gradient(circle at 20% 20%,#16a34a 0%,transparent 55%),radial-gradient(circle at 80% 80%,#ca8a04 0%,transparent 55%);"></div>
+
+                    <div style="position:relative; z-index:1; width:100%; padding:clamp(16px,2vw,36px); text-align:center;"
+                         x-data="tvAnnouncement({{ json_encode($displays->where('tipe', 'pengumuman')->values()->toArray()) }})">
+
+                        <template x-if="items.length > 0">
+                            <div class="fade-in" style="max-width:500px; margin:0 auto;">
+                                <div style="width:clamp(40px,5vw,60px); height:clamp(40px,5vw,60px); background:linear-gradient(135deg,#166534,#16a34a); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto clamp(10px,1.5vh,18px);">
+                                    <svg style="width:48%; height:48%; stroke:white; fill:none;" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+                                </div>
+                                <p style="color:#fbbf24; font-size:clamp(9px,0.8vw,11px); font-weight:700; letter-spacing:3px; text-transform:uppercase; margin-bottom:6px;">Pengumuman</p>
+                                <h3 style="color:white; font-weight:800; font-size:clamp(15px,1.7vw,24px); line-height:1.3; margin-bottom:clamp(8px,1vh,14px);" x-text="items[current]?.judul"></h3>
+                                <p style="color:rgba(255,255,255,0.65); font-size:clamp(11px,1.05vw,15px); line-height:1.7;" x-text="items[current]?.konten"></p>
+                                <div style="display:flex; gap:6px; justify-content:center; margin-top:clamp(10px,1.5vh,18px);" x-show="items.length > 1">
+                                    <template x-for="(item, i) in items" :key="i">
+                                        <div :style="i === current ? 'width:20px; background:#16a34a;' : 'width:6px; background:rgba(255,255,255,0.25);'"
+                                             style="height:6px; border-radius:3px; transition:all 0.3s;"></div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template x-if="items.length === 0">
+                            <div style="max-width:480px; margin:0 auto;">
+                                <p class="font-arabic" dir="rtl" style="color:#fde68a; font-size:clamp(16px,2vw,30px); line-height:1.7; margin-bottom:14px;">إِنَّمَا يَعْمُرُ مَسَاجِدَ اللَّهِ مَنْ آمَنَ بِاللَّهِ</p>
+                                <p style="color:rgba(255,255,255,0.45); font-size:clamp(10px,0.9vw,13px); font-style:italic;">"Hanya yang memakmurkan masjid-masjid Allah ialah orang yang beriman kepada Allah."</p>
+                                <p style="color:rgba(255,255,255,0.3); font-size:clamp(9px,0.8vw,11px); margin-top:4px;">QS. At-Taubah: 18</p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                {{-- Area label saat tidak ada stream --}}
+                <div x-show="!streamVisible"
+                     style="position:absolute; bottom:10px; right:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:3px 10px;"
+                     x-cloak>
+                    <p style="color:rgba(255,255,255,0.3); font-size:9px; font-weight:600; letter-spacing:1.5px;">AREA LIVE CAMERA</p>
+                </div>
             </div>
-            @endif
         </div>
 
         {{-- ── KANAN: Countdown + Info ── --}}
@@ -431,7 +471,131 @@ function tvAnnouncement(items) {
         }
     }
 }
+
+// ── TV Stream (CCTV HLS + YouTube) ──
+function tvStream(config) {
+    return {
+        mode:          config.mode         ?? 'youtube',
+        youtubeEmbed:  config.youtubeEmbed ?? '',
+        hlsUrl:        config.hlsUrl       ?? '',
+        tokenUrl:      config.tokenUrl     ?? '',
+        hasStream:     config.hasStream    ?? false,
+        streamLabel:   config.streamLabel  ?? 'Live Masjid',
+        isLive:        config.isLive       ?? false,
+        announcements: config.announcements ?? [],
+
+        streamVisible: false,
+        streamError:   false,
+        iframeSrc:     '',
+        token:         null,
+        hls:           null,
+
+        async init() {
+            if (!this.hasStream) return;
+
+            // Fetch token dulu sebelum load stream
+            try {
+                const res  = await fetch(this.tokenUrl, { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Token fetch failed');
+                const data = await res.json();
+                this.token = data.token;
+            } catch (e) {
+                console.warn('[tvStream] Token error:', e);
+                this.streamError = true;
+                return;
+            }
+
+            if (this.mode === 'youtube' && this.youtubeEmbed) {
+                this.iframeSrc    = this.youtubeEmbed;
+                this.streamVisible = true;
+                return;
+            }
+
+            if (this.mode === 'hls' && this.hlsUrl) {
+                await this._initHls();
+                return;
+            }
+
+            // Tidak ada stream yang bisa diload
+            this.streamVisible = false;
+        },
+
+        async _initHls() {
+            const video = this.$refs.hlsVideo;
+            if (!video) return;
+
+            const hlsUrlWithToken = this.hlsUrl + '?token=' + encodeURIComponent(this.token);
+
+            // Native HLS (Safari, beberapa Smart TV)
+            if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = hlsUrlWithToken;
+                video.addEventListener('loadedmetadata', () => {
+                    this.streamVisible = true;
+                    video.play().catch(() => {});
+                });
+                video.addEventListener('error', () => {
+                    this.streamError   = true;
+                    this.streamVisible = false;
+                    this._retryHls(30000);
+                });
+                return;
+            }
+
+            // hls.js untuk browser lain (Chrome, Firefox)
+            if (typeof Hls === 'undefined') {
+                console.warn('[tvStream] hls.js not loaded');
+                this.streamError = true;
+                return;
+            }
+
+            if (Hls.isSupported()) {
+                this.hls = new Hls({
+                    maxBufferLength:    10,
+                    maxMaxBufferLength: 20,
+                    liveSyncDuration:   3,
+                    xhrSetup: (xhr) => {
+                        // Token sudah di-embed di URL — tidak perlu header tambahan
+                    },
+                });
+                this.hls.loadSource(hlsUrlWithToken);
+                this.hls.attachMedia(video);
+                this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    this.streamVisible = true;
+                    video.play().catch(() => {});
+                });
+                this.hls.on(Hls.Events.ERROR, (event, data) => {
+                    if (data.fatal) {
+                        this.streamError   = true;
+                        this.streamVisible = false;
+                        this.hls?.destroy();
+                        this._retryHls(30000);
+                    }
+                });
+            } else {
+                this.streamError = true;
+            }
+        },
+
+        _retryHls(delay) {
+            setTimeout(async () => {
+                this.streamError = false;
+                // Refresh token sebelum retry
+                try {
+                    const res  = await fetch(this.tokenUrl, { credentials: 'same-origin' });
+                    const data = await res.json();
+                    this.token = data.token;
+                } catch (e) {}
+                await this._initHls();
+            }, delay);
+        },
+    }
+}
 </script>
+
+{{-- hls.js untuk CCTV stream di browser non-Safari --}}
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"
+        integrity="sha256-IVi/4RWlLpFJKJyE5lLMSnUgDrE0OAXFHMQQXzPr6Fw="
+        crossorigin="anonymous"></script>
 
 </body>
 </html>

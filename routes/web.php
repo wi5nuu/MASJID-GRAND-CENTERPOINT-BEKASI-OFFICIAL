@@ -80,6 +80,17 @@ Route::post('/newsletter', function (\Illuminate\Http\Request $request) {
 
 Route::get('/tv', [TvController::class, 'display'])->name('tv.display');
 
+// ─── STREAM ENDPOINTS ─────────────────────────────────────────────────────────
+// Token-based, rate-limited — URL RTSP tidak pernah terekspose ke client
+
+Route::prefix('stream')->name('stream.')->group(function () {
+    Route::get('/token', [\App\Http\Controllers\StreamController::class, 'token'])->name('token');
+    Route::get('/info',  [\App\Http\Controllers\StreamController::class, 'info'])->name('info');
+    Route::get('/hls/{path}', [\App\Http\Controllers\StreamController::class, 'hlsProxy'])
+        ->where('path', '[\w\-\/\.]+')
+        ->name('hls');
+});
+
 // ─── AUTH ROUTES ──────────────────────────────────────────────────────────────
 
 Route::prefix('admin')->name('admin.')->group(function () {
