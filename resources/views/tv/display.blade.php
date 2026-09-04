@@ -111,10 +111,10 @@
     </header>
 
     {{-- ══ MAIN CONTENT ══ --}}
-    <main style="flex:1; display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr); overflow:hidden;">
+    <main style="flex:1; display:grid; grid-template-columns: minmax(0,1.25fr) minmax(0,1.3fr) minmax(0,1.25fr); overflow:hidden;">
 
         {{-- ── KIRI: Jadwal Shalat ── --}}
-        <div style="background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%); padding: clamp(10px,1.5vh,20px) clamp(10px,1.2vw,18px); display:flex; flex-direction:column; gap:clamp(6px,0.8vh,10px); border-right: 1px solid #bbf7d0; overflow:hidden;">
+        <div style="background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%); padding: clamp(8px,1.2vh,16px) clamp(14px,1.6vw,24px); display:flex; flex-direction:column; gap:clamp(4px,0.6vh,8px); border-right: 1px solid #bbf7d0; overflow:hidden;">
 
             {{-- Title --}}
             <div style="text-align:center; margin-bottom:clamp(2px,0.5vh,6px);">
@@ -278,7 +278,7 @@
         </div>
 
         {{-- ── KANAN: Countdown + Info ── --}}
-        <div style="background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%); padding: clamp(10px,1.5vh,20px) clamp(10px,1.2vw,18px); display:flex; flex-direction:column; gap:clamp(8px,1vh,14px); border-left: 1px solid #bbf7d0; overflow:hidden;">
+        <div style="background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%); padding: clamp(8px,1.2vh,16px) clamp(14px,1.6vw,24px); display:flex; flex-direction:column; gap:clamp(6px,0.8vh,10px); border-left: 1px solid #bbf7d0; overflow:hidden;">
 
             {{-- Countdown --}}
             <div style="background: linear-gradient(135deg, #14532d, #166534); border-radius:16px; padding:clamp(10px,1.5vh,18px) clamp(10px,1.2vw,16px); text-align:center; border:1.5px solid #15803d;"
