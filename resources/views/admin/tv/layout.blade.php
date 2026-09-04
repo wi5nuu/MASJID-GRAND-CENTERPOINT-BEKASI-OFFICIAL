@@ -8,10 +8,10 @@
 @endsection
 
 @section('content')
-<div x-data="tvLayoutEditor()" class="space-y-6">
+<div x-data="tvLayoutEditor()">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between flex-wrap gap-3">
+    <div class="flex items-center justify-between flex-wrap gap-3 mb-5">
         <div>
             <h1 class="text-xl font-bold text-neutral-900">Pengaturan Layout TV</h1>
             <p class="text-sm text-neutral-500 mt-0.5">Atur tampilan, ukuran kolom, dan konten TV Display secara real-time</p>
@@ -31,72 +31,58 @@
 
     {{-- Flash --}}
     @if(session('success'))
-    <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl">{{ session('success') }}</div>
+    <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl mb-5">{{ session('success') }}</div>
     @endif
 
+    {{-- Side-by-side layout: settings kiri, preview kanan --}}
     <form action="{{ route('admin.tv.layout.update') }}" method="POST">
         @csrf
+        <div style="display:grid; grid-template-columns: 360px 1fr; gap:20px; align-items:start;">
 
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-            {{-- ── Panel Kiri: Settings ── --}}
-            <div class="xl:col-span-1 space-y-4">
+            {{-- ── KIRI: Settings Panel (scrollable) ── --}}
+            <div class="space-y-4" style="min-width:0;">
 
                 {{-- Layout Kolom --}}
                 <div class="bg-white rounded-2xl border border-neutral-200 p-5">
                     <h2 class="font-bold text-neutral-900 text-sm mb-4 flex items-center gap-2">
-                        <span class="w-6 h-6 bg-primary-100 text-primary-600 rounded-lg flex items-center justify-center text-xs">⊞</span>
+                        <span class="w-6 h-6 bg-primary-100 text-primary-700 rounded-lg flex items-center justify-center text-xs font-bold">⊞</span>
                         Layout Kolom
                     </h2>
                     <div class="space-y-4">
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
                                 <label class="text-xs font-medium text-neutral-700">Lebar Kiri (Jadwal Shalat)</label>
-                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="colKiri + 'fr'">1.1fr</span>
+                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="parseFloat(colKiri).toFixed(1) + 'fr'"></span>
                             </div>
-                            <input type="range" name="tv_col_kiri" min="0.5" max="2.5" step="0.1"
-                                   x-model="colKiri" @input="updatePreview()"
-                                   class="w-full accent-primary-600">
+                            <input type="range" name="tv_col_kiri" min="0.5" max="2.5" step="0.1" x-model="colKiri" class="w-full accent-primary-600">
                         </div>
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
                                 <label class="text-xs font-medium text-neutral-700">Lebar Tengah (Live Camera)</label>
-                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="colTengah + 'fr'">1.8fr</span>
+                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="parseFloat(colTengah).toFixed(1) + 'fr'"></span>
                             </div>
-                            <input type="range" name="tv_col_tengah" min="0.5" max="4" step="0.1"
-                                   x-model="colTengah" @input="updatePreview()"
-                                   class="w-full accent-primary-600">
+                            <input type="range" name="tv_col_tengah" min="0.5" max="4.5" step="0.1" x-model="colTengah" class="w-full accent-primary-600">
                         </div>
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
                                 <label class="text-xs font-medium text-neutral-700">Lebar Kanan (Info)</label>
-                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="colKanan + 'fr'">1.1fr</span>
+                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="parseFloat(colKanan).toFixed(1) + 'fr'"></span>
                             </div>
-                            <input type="range" name="tv_col_kanan" min="0.5" max="2.5" step="0.1"
-                                   x-model="colKanan" @input="updatePreview()"
-                                   class="w-full accent-primary-600">
+                            <input type="range" name="tv_col_kanan" min="0.5" max="2.5" step="0.1" x-model="colKanan" class="w-full accent-primary-600">
                         </div>
-
-                        {{-- Header height --}}
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
                                 <label class="text-xs font-medium text-neutral-700">Tinggi Header (px)</label>
-                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="headerHeight + 'px'">64px</span>
+                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="headerHeight + 'px'"></span>
                             </div>
-                            <input type="range" name="tv_header_height" min="40" max="120" step="4"
-                                   x-model="headerHeight" @input="updatePreview()"
-                                   class="w-full accent-primary-600">
+                            <input type="range" name="tv_header_height" min="40" max="120" step="4" x-model="headerHeight" class="w-full accent-primary-600">
                         </div>
-
-                        {{-- Footer height --}}
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
                                 <label class="text-xs font-medium text-neutral-700">Tinggi Footer Running Text (px)</label>
-                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="footerHeight + 'px'">36px</span>
+                                <span class="text-xs font-mono text-primary-600 bg-primary-50 px-2 py-0.5 rounded-lg" x-text="footerHeight + 'px'"></span>
                             </div>
-                            <input type="range" name="tv_footer_height" min="20" max="80" step="2"
-                                   x-model="footerHeight" @input="updatePreview()"
-                                   class="w-full accent-primary-600">
+                            <input type="range" name="tv_footer_height" min="20" max="80" step="2" x-model="footerHeight" class="w-full accent-primary-600">
                         </div>
                     </div>
                 </div>
@@ -104,25 +90,25 @@
                 {{-- Tampilkan/Sembunyikan Elemen --}}
                 <div class="bg-white rounded-2xl border border-neutral-200 p-5">
                     <h2 class="font-bold text-neutral-900 text-sm mb-4 flex items-center gap-2">
-                        <span class="w-6 h-6 bg-primary-100 text-primary-600 rounded-lg flex items-center justify-center text-xs">👁</span>
+                        <span class="w-6 h-6 bg-primary-100 text-primary-700 rounded-lg flex items-center justify-center text-xs font-bold">👁</span>
                         Tampilkan Elemen
                     </h2>
                     <div class="space-y-2.5">
                         @foreach([
-                            'tv_show_kiri'       => 'Kolom Kiri (Jadwal Shalat)',
-                            'tv_show_kanan'      => 'Kolom Kanan (Info)',
-                            'tv_show_footer'     => 'Footer Running Text',
-                            'tv_show_shalat_jum' => 'Jadwal Shalat Jumat',
-                            'tv_show_countdown'  => 'Countdown Waktu Shalat',
-                            'tv_show_donasi'     => 'Info Donasi',
-                            'tv_show_wifi'       => 'Info WiFi',
-                            'tv_show_kegiatan'   => 'Kegiatan Hari Ini',
-                        ] as $key => $label)
+                            'tv_show_kiri'       => ['Kolom Kiri (Jadwal Shalat)', 'showKiri'],
+                            'tv_show_kanan'      => ['Kolom Kanan (Info)',          'showKanan'],
+                            'tv_show_footer'     => ['Footer Running Text',         'showFooter'],
+                            'tv_show_shalat_jum' => ['Jadwal Shalat Jumat',         null],
+                            'tv_show_countdown'  => ['Countdown Waktu Shalat',      'showCountdown'],
+                            'tv_show_donasi'     => ['Info Donasi',                 'showDonasi'],
+                            'tv_show_wifi'       => ['Info WiFi',                   'showWifi'],
+                            'tv_show_kegiatan'   => ['Kegiatan Hari Ini',           null],
+                        ] as $key => [$label, $model])
                         <label class="flex items-center gap-3 cursor-pointer group">
-                            <div class="relative">
+                            <div class="relative flex-shrink-0">
                                 <input type="checkbox" name="{{ $key }}" value="1"
                                        {{ ($settings[$key] ?? '1') === '1' ? 'checked' : '' }}
-                                       @change="updatePreview()"
+                                       {{ $model ? 'x-model="'.$model.'"' : '' }}
                                        class="sr-only peer">
                                 <div class="w-9 h-5 bg-neutral-200 peer-checked:bg-primary-600 rounded-full transition-colors"></div>
                                 <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
@@ -136,7 +122,7 @@
                 {{-- Stream / Live Camera --}}
                 <div class="bg-white rounded-2xl border border-neutral-200 p-5">
                     <h2 class="font-bold text-neutral-900 text-sm mb-4 flex items-center gap-2">
-                        <span class="w-6 h-6 bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-xs">▶</span>
+                        <span class="w-6 h-6 bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-xs font-bold">▶</span>
                         Live Stream / CCTV
                     </h2>
                     <div class="space-y-3">
@@ -167,7 +153,7 @@
                                    class="w-full px-3 py-2 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
                         </div>
                         <label class="flex items-center gap-3 cursor-pointer">
-                            <div class="relative">
+                            <div class="relative flex-shrink-0">
                                 <input type="checkbox" name="stream_is_live" value="1"
                                        {{ ($settings['stream_is_live'] ?? '0') === '1' ? 'checked' : '' }}
                                        class="sr-only peer">
@@ -182,7 +168,7 @@
                 {{-- Konten Info --}}
                 <div class="bg-white rounded-2xl border border-neutral-200 p-5">
                     <h2 class="font-bold text-neutral-900 text-sm mb-4 flex items-center gap-2">
-                        <span class="w-6 h-6 bg-primary-100 text-primary-600 rounded-lg flex items-center justify-center text-xs">✎</span>
+                        <span class="w-6 h-6 bg-primary-100 text-primary-700 rounded-lg flex items-center justify-center text-xs font-bold">✎</span>
                         Konten Info
                     </h2>
                     <div class="space-y-3">
@@ -217,117 +203,127 @@
                 </button>
             </div>
 
-            {{-- ── Panel Kanan: Live Preview ── --}}
-            <div class="xl:col-span-2">
-                <div class="bg-white rounded-2xl border border-neutral-200 p-4 sticky top-4">
+            {{-- ── KANAN: Live Preview (sticky) ── --}}
+            <div style="position:sticky; top:80px; min-width:0;">
+                <div class="bg-white rounded-2xl border border-neutral-200 p-4">
                     <div class="flex items-center justify-between mb-3">
                         <p class="text-xs font-bold text-neutral-700 uppercase tracking-widest">Live Preview</p>
-                        <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded-lg">Proporsional — bukan skala penuh</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded-lg">16:9 — proporsional</span>
+                            <a href="{{ route('tv.display') }}" target="_blank"
+                               class="text-xs text-primary-600 hover:text-primary-700 bg-primary-50 hover:bg-primary-100 px-2 py-1 rounded-lg transition-colors">
+                               Buka fullscreen →
+                            </a>
+                        </div>
                     </div>
 
-                    {{-- Preview screen --}}
-                    <div class="rounded-xl overflow-hidden border-2 border-neutral-800 shadow-xl bg-neutral-900"
-                         style="aspect-ratio: 16/9; position:relative;">
+                    {{-- TV Screen Preview --}}
+                    <div class="rounded-xl overflow-hidden border-2 border-neutral-800 shadow-2xl bg-neutral-900"
+                         style="aspect-ratio:16/9; position:relative;">
+                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; font-family:'Plus Jakarta Sans',sans-serif; overflow:hidden;">
 
-                        {{-- Preview inner --}}
-                        <div style="position:absolute; inset:0; display:flex; flex-direction:column; font-size:8px; font-family:'Plus Jakarta Sans',sans-serif;">
-
-                            {{-- Header preview --}}
-                            <div :style="'background:linear-gradient(135deg,#14532d,#166534); border-bottom:2px solid #ca8a04; height:' + (headerHeight/6) + '%; flex-shrink:0; display:flex; align-items:center; padding:0 8px; gap:6px;'"
-                                 style="min-height:14px;">
-                                <div style="width:14px; height:14px; background:rgba(255,255,255,0.15); border:1px solid #fbbf24; border-radius:3px; flex-shrink:0;"></div>
-                                <div style="flex:1;">
-                                    <div style="color:white; font-weight:800; font-size:7px; line-height:1.2;">Masjid Grand Centerpoint Bekasi</div>
-                                    <div style="color:#fde68a; font-size:6px; direction:rtl;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                            {{-- Header --}}
+                            <div :style="'height:'+Math.round(headerHeight/6)+'%; min-height:12px; flex-shrink:0; background:linear-gradient(135deg,#14532d,#166534); border-bottom:1.5px solid #ca8a04; display:flex; align-items:center; padding:0 8px; gap:6px;'">
+                                <div style="width:12px; height:12px; background:rgba(255,255,255,0.15); border:1px solid #fbbf24; border-radius:2px; flex-shrink:0;"></div>
+                                <div style="flex:1; min-width:0;">
+                                    <div style="color:white; font-weight:800; font-size:clamp(5px,0.9vw,8px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Masjid Grand Centerpoint Bekasi</div>
+                                    <div style="color:#fde68a; font-size:clamp(4px,0.7vw,6px); direction:rtl;">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
                                 </div>
-                                <div style="text-align:right;">
-                                    <div style="color:white; font-family:monospace; font-weight:800; font-size:10px;">09:08:24</div>
-                                    <div style="color:#86efac; font-size:5px;">WIB</div>
+                                <div style="text-align:right; flex-shrink:0;">
+                                    <div style="color:white; font-family:monospace; font-weight:800; font-size:clamp(7px,1.2vw,11px);">09:08:24</div>
+                                    <div style="color:#86efac; font-size:clamp(3px,0.5vw,5px);">WIB</div>
                                 </div>
                             </div>
 
-                            {{-- Main grid preview --}}
-                            <div style="flex:1; overflow:hidden; display:grid;"
-                                 :style="'grid-template-columns: ' + (showKiri ? colKiri+'fr ' : '') + colTengah + 'fr' + (showKanan ? ' '+colKanan+'fr' : '')">
+                            {{-- Grid --}}
+                            <div style="flex:1; display:grid; overflow:hidden; min-height:0;"
+                                 :style="'grid-template-columns:' + (showKiri ? parseFloat(colKiri)+'fr ' : '') + parseFloat(colTengah)+'fr' + (showKanan ? ' '+parseFloat(colKanan)+'fr' : '')">
 
                                 {{-- Kiri --}}
-                                <div x-show="showKiri" style="background:linear-gradient(180deg,#f0fdf4,#dcfce7); border-right:1px solid #bbf7d0; padding:4px; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
-                                    <div style="text-align:center; margin-bottom:2px;">
-                                        <div style="font-size:5px; font-weight:700; color:#166534; letter-spacing:2px; text-transform:uppercase;">JADWAL SHALAT</div>
+                                <div x-show="showKiri" x-cloak
+                                     style="background:linear-gradient(180deg,#f0fdf4,#dcfce7); border-right:1px solid #bbf7d0; padding:3px 4px; display:flex; flex-direction:column; gap:1.5px; overflow:hidden;">
+                                    <div style="text-align:center; padding-bottom:1px;">
+                                        <div style="font-size:clamp(4px,0.6vw,5px); font-weight:700; color:#166534; letter-spacing:1.5px; text-transform:uppercase;">JADWAL SHALAT</div>
                                     </div>
                                     @foreach([['Subuh','04:34'],['Syuruq','05:51'],['Dzuhur','11:51'],['Ashar','15:08'],['Maghrib','17:51'],['Isya','19:01']] as [$n,$t])
-                                    <div style="background:white; border:1px solid #bbf7d0; border-radius:3px; padding:2px 4px; display:flex; justify-content:space-between; align-items:center;">
-                                        <span style="font-weight:700; color:#14532d; font-size:6px;">{{ $n }}</span>
-                                        <span style="font-family:monospace; font-weight:800; color:#166534; font-size:7px;">{{ $t }}</span>
+                                    <div style="background:white; border:1px solid #bbf7d0; border-radius:2px; padding:1.5px 3px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
+                                        <span style="font-weight:700; color:#14532d; font-size:clamp(4px,0.65vw,6px);">{{ $n }}</span>
+                                        <span style="font-family:monospace; font-weight:800; color:#166534; font-size:clamp(4px,0.7vw,7px);">{{ $t }}</span>
                                     </div>
                                     @endforeach
                                 </div>
 
                                 {{-- Tengah --}}
-                                <div style="background:#0a0f1a; display:flex; align-items:center; justify-content:center; position:relative;">
-                                    <div style="position:absolute; inset:0; opacity:0.07; background:radial-gradient(circle at 20% 20%,#16a34a 0%,transparent 55%),radial-gradient(circle at 80% 80%,#ca8a04 0%,transparent 55%);"></div>
+                                <div style="background:#0a0f1a; position:relative; display:flex; align-items:center; justify-content:center;">
+                                    <div style="position:absolute; inset:0; opacity:0.08; background:radial-gradient(circle at 20% 20%,#16a34a,transparent 55%),radial-gradient(circle at 80% 80%,#ca8a04,transparent 55%);"></div>
                                     <div style="position:relative; z-index:1; text-align:center;">
-                                        <div style="color:rgba(255,255,255,0.2); font-size:6px; font-weight:600; letter-spacing:1.5px;">AREA LIVE CAMERA</div>
-                                        <div style="color:rgba(255,255,255,0.1); font-size:5px; margin-top:2px;">CCTV / YouTube Live</div>
+                                        <div style="color:rgba(255,255,255,0.25); font-size:clamp(5px,0.8vw,7px); font-weight:600; letter-spacing:1.5px; text-transform:uppercase;">AREA LIVE CAMERA</div>
+                                        <div style="color:rgba(255,255,255,0.12); font-size:clamp(4px,0.6vw,5px); margin-top:2px;">CCTV / YouTube Live</div>
                                     </div>
                                 </div>
 
                                 {{-- Kanan --}}
-                                <div x-show="showKanan" style="background:linear-gradient(180deg,#f0fdf4,#dcfce7); border-left:1px solid #bbf7d0; padding:4px; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
-                                    <div x-show="showCountdown" style="background:linear-gradient(135deg,#14532d,#166534); border-radius:4px; padding:3px 4px; text-align:center;">
-                                        <div style="color:#86efac; font-size:4px; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:1px;">Waktu Menuju Shalat</div>
-                                        <div style="color:#fbbf24; font-size:5px; font-weight:800;">Dzuhur</div>
-                                        <div style="display:flex; justify-content:center; gap:2px; margin-top:1px;">
-                                            <div style="background:rgba(255,255,255,0.15); color:white; font-size:7px; font-weight:800; padding:1px 3px; border-radius:2px;">02</div>
-                                            <span style="color:white; font-weight:900;">:</span>
-                                            <div style="background:rgba(255,255,255,0.15); color:white; font-size:7px; font-weight:800; padding:1px 3px; border-radius:2px;">53</div>
-                                            <span style="color:white; font-weight:900;">:</span>
-                                            <div style="background:rgba(255,255,255,0.15); color:white; font-size:7px; font-weight:800; padding:1px 3px; border-radius:2px;">24</div>
+                                <div x-show="showKanan" x-cloak
+                                     style="background:linear-gradient(180deg,#f0fdf4,#dcfce7); border-left:1px solid #bbf7d0; padding:3px 4px; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
+                                    <div x-show="showCountdown"
+                                         style="background:linear-gradient(135deg,#14532d,#166534); border-radius:3px; padding:2px 3px; text-align:center; flex-shrink:0;">
+                                        <div style="color:#86efac; font-size:clamp(3px,0.45vw,4px); font-weight:700; letter-spacing:0.5px; text-transform:uppercase;">Waktu Menuju Shalat</div>
+                                        <div style="color:#fbbf24; font-size:clamp(4px,0.6vw,5px); font-weight:800; margin-top:1px;">Dzuhur</div>
+                                        <div style="display:flex; justify-content:center; gap:1px; margin-top:1px;">
+                                            <div style="background:rgba(255,255,255,0.15); color:white; font-size:clamp(5px,0.8vw,7px); font-weight:800; padding:1px 2px; border-radius:1.5px;">02</div>
+                                            <span style="color:white; font-weight:900; font-size:clamp(5px,0.7vw,6px);">:</span>
+                                            <div style="background:rgba(255,255,255,0.15); color:white; font-size:clamp(5px,0.8vw,7px); font-weight:800; padding:1px 2px; border-radius:1.5px;">53</div>
+                                            <span style="color:white; font-weight:900; font-size:clamp(5px,0.7vw,6px);">:</span>
+                                            <div style="background:rgba(255,255,255,0.15); color:white; font-size:clamp(5px,0.8vw,7px); font-weight:800; padding:1px 2px; border-radius:1.5px;">24</div>
                                         </div>
                                     </div>
-                                    <div x-show="showDonasi" style="background:white; border:1px solid #bbf7d0; border-radius:3px; padding:2px 4px;">
-                                        <div style="font-weight:800; color:#14532d; font-size:5px; margin-bottom:1px;">Donasi Masjid</div>
-                                        <div style="color:#166534; font-size:5px; line-height:1.5;">Bank Syariah Indonesia</div>
+                                    <div x-show="showDonasi"
+                                         style="background:white; border:1px solid #bbf7d0; border-radius:2px; padding:2px 3px; flex-shrink:0;">
+                                        <div style="font-weight:800; color:#14532d; font-size:clamp(3px,0.5vw,5px); margin-bottom:0.5px;">Donasi Masjid</div>
+                                        <div style="color:#166534; font-size:clamp(3px,0.45vw,4px);">Bank Syariah Indonesia</div>
                                     </div>
-                                    <div x-show="showWifi" style="background:white; border:1px solid #bbf7d0; border-radius:3px; padding:2px 4px;">
-                                        <div style="font-weight:800; color:#14532d; font-size:5px; margin-bottom:1px;">WiFi Masjid</div>
-                                        <div style="display:flex; justify-content:space-between; background:#f0fdf4; border-radius:2px; padding:1px 2px;">
-                                            <span style="color:#6b7280; font-size:4px;">SSID</span>
-                                            <span style="color:#14532d; font-weight:700; font-size:4px;">MasjidGCP</span>
+                                    <div x-show="showWifi"
+                                         style="background:white; border:1px solid #bbf7d0; border-radius:2px; padding:2px 3px; flex-shrink:0;">
+                                        <div style="font-weight:800; color:#14532d; font-size:clamp(3px,0.5vw,5px); margin-bottom:0.5px;">WiFi Masjid</div>
+                                        <div style="display:flex; justify-content:space-between; background:#f0fdf4; border-radius:1.5px; padding:1px 2px;">
+                                            <span style="color:#6b7280; font-size:clamp(3px,0.4vw,4px);">SSID</span>
+                                            <span style="color:#14532d; font-weight:700; font-size:clamp(3px,0.4vw,4px);">MasjidGCP</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Footer preview --}}
-                            <div x-show="showFooter"
-                                 :style="'background:linear-gradient(90deg,#14532d,#166534); border-top:1px solid #ca8a04; height:' + (footerHeight/4) + '%; flex-shrink:0; display:flex; align-items:center; overflow:hidden;'"
-                                 style="min-height:8px;">
-                                <div style="color:white; font-size:5px; white-space:nowrap; padding:0 6px;">▶ &nbsp; Selamat datang di Masjid Grand Centerpoint Bekasi &nbsp; ✦ &nbsp; Selamat datang di Masjid Grand Centerpoint Bekasi</div>
+                            {{-- Footer --}}
+                            <div x-show="showFooter" x-cloak
+                                 :style="'height:'+Math.round(footerHeight/4)+'%; min-height:6px; flex-shrink:0; background:linear-gradient(90deg,#14532d,#166534); border-top:1px solid #ca8a04; display:flex; align-items:center; overflow:hidden;'">
+                                <div style="color:white; font-size:clamp(4px,0.6vw,5px); white-space:nowrap; padding:0 6px; opacity:0.9;">
+                                    ▶ &nbsp; Selamat datang di Masjid Grand Centerpoint Bekasi &nbsp; ✦ &nbsp; Selamat datang di Masjid Grand Centerpoint Bekasi
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {{-- Proporsi info --}}
-                    <div class="mt-3 flex items-center gap-3 flex-wrap">
-                        <div class="flex items-center gap-2 text-xs text-neutral-500">
+                    {{-- Info proporsi kolom --}}
+                    <div class="mt-3 flex items-center gap-3 flex-wrap text-xs text-neutral-500">
+                        <div class="flex items-center gap-1.5">
                             <span class="w-3 h-3 rounded bg-green-200 border border-green-400 inline-block"></span>
-                            <span x-text="'Kiri: ' + colKiri + 'fr'">Kiri: 1.1fr</span>
+                            <span x-text="'Kiri: ' + parseFloat(colKiri).toFixed(1) + 'fr'"></span>
                         </div>
-                        <div class="flex items-center gap-2 text-xs text-neutral-500">
-                            <span class="w-3 h-3 rounded bg-slate-700 border border-slate-500 inline-block"></span>
-                            <span x-text="'Tengah: ' + colTengah + 'fr'">Tengah: 1.8fr</span>
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-3 h-3 rounded bg-slate-800 border border-slate-600 inline-block"></span>
+                            <span x-text="'Tengah: ' + parseFloat(colTengah).toFixed(1) + 'fr'"></span>
                         </div>
-                        <div class="flex items-center gap-2 text-xs text-neutral-500">
+                        <div class="flex items-center gap-1.5">
                             <span class="w-3 h-3 rounded bg-green-200 border border-green-400 inline-block"></span>
-                            <span x-text="'Kanan: ' + colKanan + 'fr'">Kanan: 1.1fr</span>
+                            <span x-text="'Kanan: ' + parseFloat(colKanan).toFixed(1) + 'fr'"></span>
                         </div>
-                        <div class="ml-auto text-xs text-neutral-400">
-                            Total: <span x-text="(parseFloat(colKiri) + parseFloat(colTengah) + parseFloat(colKanan)).toFixed(1) + 'fr'"></span>
+                        <div class="ml-auto text-neutral-400">
+                            Rasio tengah: <span class="font-mono text-primary-600" x-text="Math.round(parseFloat(colTengah) / (parseFloat(colKiri) + parseFloat(colTengah) + parseFloat(colKanan)) * 100) + '%'"></span>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </form>
 </div>
