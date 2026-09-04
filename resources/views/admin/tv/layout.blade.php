@@ -89,31 +89,31 @@
 
                 {{-- Tampilkan/Sembunyikan Elemen --}}
                 <div class="bg-white rounded-2xl border border-neutral-200 p-5">
-                    <h2 class="font-bold text-neutral-900 text-sm mb-4 flex items-center gap-2">
+                    <h2 class="font-bold text-neutral-900 text-sm mb-3 flex items-center gap-2">
                         <span class="w-6 h-6 bg-primary-100 text-primary-700 rounded-lg flex items-center justify-center text-xs font-bold">👁</span>
                         Tampilkan Elemen
                     </h2>
-                    <div class="space-y-2.5">
+                    <div class="grid grid-cols-2 gap-2">
                         @foreach([
-                            'tv_show_kiri'       => ['Kolom Kiri (Jadwal Shalat)', 'showKiri'],
-                            'tv_show_kanan'      => ['Kolom Kanan (Info)',          'showKanan'],
-                            'tv_show_footer'     => ['Footer Running Text',         'showFooter'],
-                            'tv_show_shalat_jum' => ['Jadwal Shalat Jumat',         null],
-                            'tv_show_countdown'  => ['Countdown Waktu Shalat',      'showCountdown'],
-                            'tv_show_donasi'     => ['Info Donasi',                 'showDonasi'],
-                            'tv_show_wifi'       => ['Info WiFi',                   'showWifi'],
-                            'tv_show_kegiatan'   => ['Kegiatan Hari Ini',           null],
+                            'tv_show_kiri'       => ['Kolom Kiri',      'showKiri'],
+                            'tv_show_kanan'      => ['Kolom Kanan',     'showKanan'],
+                            'tv_show_footer'     => ['Running Text',    'showFooter'],
+                            'tv_show_shalat_jum' => ['Shalat Jumat',    null],
+                            'tv_show_countdown'  => ['Countdown',       'showCountdown'],
+                            'tv_show_donasi'     => ['Donasi',          'showDonasi'],
+                            'tv_show_wifi'       => ['Info WiFi',       'showWifi'],
+                            'tv_show_kegiatan'   => ['Kegiatan',        null],
                         ] as $key => [$label, $model])
-                        <label class="flex items-center gap-3 cursor-pointer group">
+                        <label class="flex items-center gap-2 cursor-pointer group bg-neutral-50 hover:bg-primary-50 border border-neutral-200 hover:border-primary-200 rounded-xl px-3 py-2.5 transition-colors">
                             <div class="relative flex-shrink-0">
                                 <input type="checkbox" name="{{ $key }}" value="1"
                                        {{ ($settings[$key] ?? '1') === '1' ? 'checked' : '' }}
                                        {{ $model ? 'x-model="'.$model.'"' : '' }}
                                        class="sr-only peer">
-                                <div class="w-9 h-5 bg-neutral-200 peer-checked:bg-primary-600 rounded-full transition-colors"></div>
-                                <div class="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4"></div>
+                                <div class="w-7 h-4 bg-neutral-300 peer-checked:bg-primary-600 rounded-full transition-colors"></div>
+                                <div class="absolute top-0.5 left-0.5 w-3 h-3 bg-white rounded-full shadow transition-transform peer-checked:translate-x-3"></div>
                             </div>
-                            <span class="text-xs font-medium text-neutral-700 group-hover:text-neutral-900">{{ $label }}</span>
+                            <span class="text-xs font-semibold text-neutral-600 group-hover:text-primary-700 leading-tight">{{ $label }}</span>
                         </label>
                         @endforeach
                     </div>
