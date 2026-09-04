@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TvDisplay;
+use App\Models\JadwalShalat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -38,4 +39,19 @@ class TvController extends Controller
 
     public function destroy(TvDisplay $tv) { $tv->delete(); return back()->with('success', 'Konten TV dihapus.'); }
     public function show(TvDisplay $tv) { return view('admin.tv.show', compact('tv')); }
+
+    public function display()
+    {
+        $shalat   = JadwalShalat::whereDate('tanggal', today())->first();
+
+        // Jika tidak ada data hari ini, auto-fetch dari API
+        if (!$shalat) {
+            \App\Http\Controllers\Admin\ShalatController::fetchToday();
+            $shalat = JadwalShalat::whereDate('tanggal', today())->first();
+        }
+
+        $displays = TvDisplay::where('is_active', true)->orderBy('urutan')->get();
+
+        return view('tv.display', compact('shalat', 'displays'));
+    }
 }

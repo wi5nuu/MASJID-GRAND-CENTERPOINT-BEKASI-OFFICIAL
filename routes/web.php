@@ -78,11 +78,7 @@ Route::post('/newsletter', function (\Illuminate\Http\Request $request) {
 
 // ─── TV DISPLAY ───────────────────────────────────────────────────────────────
 
-Route::get('/tv', function () {
-    $shalat = \App\Models\JadwalShalat::today();
-    $displays = \App\Models\TvDisplay::active()->get();
-    return view('tv.display', compact('shalat', 'displays'));
-})->name('tv.display');
+Route::get('/tv', [TvController::class, 'display'])->name('tv.display');
 
 // ─── AUTH ROUTES ──────────────────────────────────────────────────────────────
 
