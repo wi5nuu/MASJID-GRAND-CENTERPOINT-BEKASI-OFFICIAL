@@ -26,7 +26,7 @@
     #quill-editor h2 { font-size: 1.5rem; font-weight: 700; margin: 1.25em 0 0.5em; }
     #quill-editor h3 { font-size: 1.25rem; font-weight: 600; margin: 1em 0 0.5em; }
     #quill-editor blockquote {
-        border-left: 4px solid #16a34a;
+        border-left: 4px solid #2563eb;
         padding-left: 1rem;
         color: #6b7280;
         font-style: italic;
@@ -63,18 +63,18 @@
     .ql-snow .ql-toolbar button:hover,
     .ql-snow.ql-toolbar button.ql-active,
     .ql-snow .ql-toolbar button.ql-active {
-        color: #16a34a !important;
+        color: #2563eb !important;
     }
     .ql-snow.ql-toolbar button:hover .ql-stroke,
     .ql-snow .ql-toolbar button:hover .ql-stroke,
     .ql-snow.ql-toolbar button.ql-active .ql-stroke,
     .ql-snow .ql-toolbar button.ql-active .ql-stroke {
-        stroke: #16a34a !important;
+        stroke: #2563eb !important;
     }
     .ql-snow.ql-toolbar button:hover .ql-fill,
     .ql-snow .ql-toolbar button:hover .ql-fill,
     .ql-snow.ql-toolbar button.ql-active .ql-fill {
-        fill: #16a34a !important;
+        fill: #2563eb !important;
     }
 
     /* ── Thumbnail preview ── */
@@ -91,7 +91,7 @@
         overflow: hidden;
     }
     .editor-wrapper:focus-within {
-        border-color: #16a34a;
+        border-color: #2563eb;
         box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
     }
 </style>
@@ -102,7 +102,7 @@
 <div x-data="beritaForm()" class="max-w-5xl">
 
     {{-- Header --}}
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
             <h1 class="text-xl font-bold text-neutral-900">{{ isset($berita) ? 'Edit Berita' : 'Tulis Berita Baru' }}</h1>
             <p class="text-sm text-neutral-500 mt-0.5">{{ isset($berita) ? 'Perbarui konten artikel' : 'Buat artikel berita baru untuk ditayangkan' }}</p>
@@ -249,7 +249,7 @@
                         <p class="text-blue-600 text-sm font-medium truncate" id="seo-title-preview">
                             {{ $berita->meta_title ?? $berita->judul ?? 'Judul artikel Anda...' }}
                         </p>
-                        <p class="text-green-700 text-xs mt-0.5">masjidgcp.com › berita › <span id="seo-slug-preview">{{ $berita->slug ?? 'slug-artikel' }}</span></p>
+                        <p class="text-primary-600 text-xs mt-0.5">masjidgcp.com › berita › <span id="seo-slug-preview">{{ $berita->slug ?? 'slug-artikel' }}</span></p>
                         <p class="text-neutral-500 text-xs mt-1 leading-relaxed line-clamp-2" id="seo-desc-preview">
                             {{ $berita->meta_description ?? $berita->ringkasan ?? 'Deskripsi meta artikel Anda akan muncul di sini...' }}
                         </p>

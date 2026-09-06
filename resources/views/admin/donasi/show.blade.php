@@ -9,7 +9,7 @@
 
 @section('content')
 <div class="max-w-2xl">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <h1 class="text-xl font-bold text-neutral-900">Detail Donasi</h1>
         <a href="{{ route('admin.donasi.index') }}" class="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-700 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <p class="text-xs text-neutral-400 mb-1">Metode Bayar</p>
-                    <p class="text-sm font-semibold text-neutral-800">{{ strtoupper($donasi->metode_bayar ?? '-') }}</p>
+                    <p class="text-sm font-semibold text-neutral-800">{{ strtoupper($donasi->metode ?? '-') }}</p>
                 </div>
                 <div>
                     <p class="text-xs text-neutral-400 mb-1">Tanggal</p>
@@ -87,18 +87,20 @@
         {{-- Action --}}
         @if($donasi->status === 'pending')
         <div class="px-6 pb-6 flex items-center gap-3">
-            <form action="{{ route('admin.donasi.konfirmasi', $donasi) }}" method="POST">
+            {{-- Konfirmasi: pakai route konfirmasi khusus --}}
+            <form action="{{ route('admin.donasi.konfirmasi', $donasi) }}" method="POST" data-confirm="Donasi akan ditandai sebagai terkonfirmasi." data-confirm-title="Konfirmasi Donasi?" data-confirm-ok="Ya, Konfirmasi" data-confirm-variant="success">
                 @csrf
-                <input type="hidden" name="status" value="confirmed">
-                <button type="submit" onclick="return confirm('Konfirmasi donasi ini?')"
+                <button type="submit"
                     class="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
                     Konfirmasi
                 </button>
             </form>
-            <form action="{{ route('admin.donasi.konfirmasi', $donasi) }}" method="POST">
+            {{-- Tolak: pakai route update dengan method PUT --}}
+            <form action="{{ route('admin.donasi.update', $donasi) }}" method="POST" data-confirm="Donasi akan ditandai sebagai ditolak." data-confirm-title="Tolak Donasi?" data-confirm-ok="Ya, Tolak" data-confirm-variant="danger">
                 @csrf
+                @method('PUT')
                 <input type="hidden" name="status" value="rejected">
-                <button type="submit" onclick="return confirm('Tolak donasi ini?')"
+                <button type="submit"
                     class="bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
                     Tolak
                 </button>

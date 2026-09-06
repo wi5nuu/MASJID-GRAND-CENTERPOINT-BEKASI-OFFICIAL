@@ -16,8 +16,8 @@
 
     {{-- Flash --}}
     @if(session('success'))
-    <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
-        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <div class="bg-primary-50 border border-primary-200 text-primary-800 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+        <svg class="w-4 h-4 shrink-0 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         {{ session('success') }}
     </div>
     @endif
@@ -56,7 +56,7 @@
         <div class="seo-preview hidden px-5 py-3 bg-neutral-50 border-b border-neutral-100">
             <p class="text-xs text-neutral-400 mb-2 font-medium uppercase tracking-wide">Pratinjau di Google</p>
             <p class="text-blue-600 text-sm font-medium truncate">{{ $page->meta_title ?? 'Meta title belum diisi' }}</p>
-            <p class="text-green-700 text-xs mt-0.5">masjidgcp.com › {{ $page->page ?? '' }}</p>
+                    <p class="text-primary-600 text-xs mt-0.5">masjidgcp.com › {{ $page->page ?? '' }}</p>
             <p class="text-neutral-500 text-xs mt-1 leading-relaxed line-clamp-2">{{ $page->meta_description ?? 'Meta description belum diisi.' }}</p>
         </div>
 

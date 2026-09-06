@@ -23,8 +23,8 @@
 
     {{-- Flash --}}
     @if(session('success'))
-    <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
-        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <div class="bg-primary-50 border border-primary-200 text-primary-800 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+        <svg class="w-4 h-4 shrink-0 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         {{ session('success') }}
     </div>
     @endif
@@ -102,8 +102,8 @@
                         </td>
                         <td class="px-4 py-3">
                             @if($video->is_active)
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>Aktif
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-700">
+                                <span class="w-1.5 h-1.5 rounded-full bg-primary-500"></span>Aktif
                             </span>
                             @else
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-neutral-100 text-neutral-500">
@@ -127,7 +127,7 @@
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 </a>
                                 <form action="{{ route('admin.video.destroy', $video) }}" method="POST"
-                                    onsubmit="return confirm('Hapus video ini?')">
+                                    data-confirm="Video ini akan dihapus permanen dan tidak dapat dikembalikan." data-confirm-title="Hapus Video?" data-confirm-ok="Ya, Hapus" data-confirm-variant="danger">
                                     @csrf @method('DELETE')
                                     <button type="submit"
                                         class="p-1.5 rounded-lg text-neutral-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Hapus">

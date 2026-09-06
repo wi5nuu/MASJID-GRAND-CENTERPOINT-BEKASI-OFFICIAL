@@ -18,15 +18,21 @@ use App\Http\Controllers\Admin\GaleriController as AdminGaleriController;
 use App\Http\Controllers\Admin\VideoController as AdminVideoController;
 use App\Http\Controllers\Admin\DonasiController as AdminDonasiController;
 use App\Http\Controllers\Admin\PengurusController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ShalatController;
 use App\Http\Controllers\Admin\TvController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Jamaah\DashboardController as JamaahDashboardController;
+use App\Http\Controllers\Jamaah\RegisterController as JamaahRegisterController;
+use App\Http\Controllers\Jamaah\LoginController as JamaahLoginController;
 
 // ─── PUBLIC ROUTES ───────────────────────────────────────────────────────────
 
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tentang', [TentangController::class, 'index'])->name('tentang');
 
@@ -60,9 +66,10 @@ Route::prefix('video')->name('video.')->group(function () {
 // Donasi
 Route::prefix('donasi')->name('donasi.')->group(function () {
     Route::get('/', [DonasiController::class, 'index'])->name('index');
-    Route::get('/{program:slug}', [DonasiController::class, 'show'])->name('show');
     Route::post('/', [DonasiController::class, 'store'])->name('store');
+    // Route literal harus SEBELUM wildcard slug agar tidak ter-intercept
     Route::get('/konfirmasi/{donasi}', [DonasiController::class, 'konfirmasi'])->name('konfirmasi');
+    Route::get('/{program:slug}', [DonasiController::class, 'show'])->name('show');
 });
 
 // Kontak
@@ -92,23 +99,56 @@ Route::prefix('stream')->name('stream.')->group(function () {
 });
 
 // ─── AUTH ROUTES ──────────────────────────────────────────────────────────────
+// URL login dibaca dari .env (LOGIN_PATH) agar tidak mudah ditebak bot
+// Default: 'login' — ubah di .env: LOGIN_PATH=masuk-panel
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
-    Route::post('/login', [LoginController::class, 'login'])->name('login.post')->middleware('guest');
+    $loginPath = config('app.login_path', 'login');
+
+    Route::get('/' . $loginPath,  [LoginController::class, 'showLoginForm'])
+        ->name('login')
+        ->middleware('guest');
+
+    Route::post('/' . $loginPath, [LoginController::class, 'login'])
+        ->name('login.post')
+        ->middleware(['guest', 'honeypot', 'login.limit']);
+
+    // Jika LOGIN_PATH beda dari 'login', redirect /admin/login ke path baru
+    if ($loginPath !== 'login') {
+        Route::get('/login', fn () => redirect()->route('admin.login'))
+            ->middleware('guest');
+    }
+
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Password reset placeholder
     Route::get('/password/reset', fn() => view('auth.forgot-password'))->name('password.request');
 
     // ─── PROTECTED ADMIN ROUTES ───────────────────────────────────────────────
-    Route::middleware(['auth'])->group(function () {
+    // Hanya superadmin/admin/editor. Akun jamaah yang membuka /admin mendapat 403.
+    Route::middleware(['auth', 'role:superadmin,admin,editor'])->group(function () {
 
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/dashboard', [DashboardController::class, 'index']);
 
         // Profile
         Route::get('/profile', fn() => view('admin.profile'))->name('profile');
+        Route::put('/profile', function (\Illuminate\Http\Request $request) {
+            $request->validate([
+                'name'  => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+            ]);
+            auth()->user()->update($request->only('name', 'email'));
+            return back()->with('success', 'Profil berhasil diperbarui.');
+        })->name('profile.update');
+        Route::put('/profile/password', function (\Illuminate\Http\Request $request) {
+            $request->validate([
+                'current_password' => 'required|current_password',
+                'password'         => 'required|string|min:8|confirmed',
+            ]);
+            auth()->user()->update(['password' => \Illuminate\Support\Facades\Hash::make($request->password)]);
+            return back()->with('success', 'Password berhasil diubah.');
+        })->name('profile.password');
 
         // Berita
         Route::resource('berita', AdminBeritaController::class)->parameters(['berita' => 'berita'])->names([
@@ -208,6 +248,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('tv-layout', [TvController::class, 'layoutUpdate'])->name('tv.layout.update');
 
         // Users
+        Route::post('users/bulk-destroy', [UserController::class, 'destroyBulk'])->name('users.bulk-destroy');
         Route::resource('users', UserController::class)->names([
             'index'   => 'users.index',
             'create'  => 'users.create',
@@ -217,6 +258,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             'update'  => 'users.update',
             'destroy' => 'users.destroy',
         ]);
+        Route::post('users/{user}/approve', [UserController::class, 'approve'])->name('users.approve');
 
         // SEO
         Route::get('seo', [SeoController::class, 'index'])->name('seo.index');
@@ -235,9 +277,42 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('kontak', fn() => view('admin.kontak.index', [
             'kontaks' => \App\Models\Kontak::orderByDesc('created_at')->paginate(20)
         ]))->name('kontak.index');
+        Route::get('kontak/{kontak}', function (\App\Models\Kontak $kontak) {
+            if (!$kontak->is_read) $kontak->update(['is_read' => true, 'read_at' => now()]);
+            return view('admin.kontak.show', compact('kontak'));
+        })->name('kontak.show');
         Route::post('kontak/{kontak}/read', function (\App\Models\Kontak $kontak) {
             $kontak->update(['is_read' => true, 'read_at' => now()]);
             return back();
         })->name('kontak.read');
+        Route::delete('kontak/{kontak}', function (\App\Models\Kontak $kontak) {
+            $kontak->delete();
+            return redirect()->route('admin.kontak.index')->with('success', 'Pesan berhasil dihapus.');
+        })->name('kontak.destroy');
+
+        // Notifikasi realtime (badge sidebar + dropdown topbar)
+        Route::get('notifications/feed', [NotificationController::class, 'feed'])->name('notifications.feed');
+        Route::post('notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    });
+});
+
+// ─── JAMAAH ROUTES ──────────────────────────────────────────────────────────
+Route::prefix('jamaah')->name('jamaah.')->group(function () {
+    // Public routes (guest)
+    Route::middleware('guest')->group(function () {
+        Route::get('/register', [JamaahRegisterController::class, 'showForm'])->name('register');
+        Route::post('/register', [JamaahRegisterController::class, 'register'])->name('register.post');
+
+        $loginPath = config('app.jamaah_login_path', 'masuk');
+        Route::get('/' . $loginPath, [JamaahLoginController::class, 'showLoginForm'])->name('login');
+        Route::post('/' . $loginPath, [JamaahLoginController::class, 'login'])->name('login.post');
+    });
+
+    Route::post('/logout', [JamaahLoginController::class, 'logout'])->name('logout');
+
+    // Protected jamaah routes
+    Route::middleware(['auth', 'role:jamaah'])->group(function () {
+        Route::get('/', [JamaahDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [JamaahDashboardController::class, 'index']);
     });
 });

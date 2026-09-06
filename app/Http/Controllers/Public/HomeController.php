@@ -35,16 +35,28 @@ class HomeController extends Controller
             ->limit(6)
             ->get();
 
+        $latestKegiatan = Kegiatan::active()
+            ->orderByDesc('created_at')
+            ->limit(3)
+            ->get();
+
         $latestGaleri = Galeri::active()
             ->orderByDesc('created_at')
             ->limit(8)
             ->get();
 
+        $profilMasjid = (object) [
+            'deskripsi' => Setting::get('profil_deskripsi'),
+            'foto'      => Setting::get('profil_foto'),
+        ];
+
         return view('public.home', compact(
             'prayerTimes',
             'latestBerita',
             'upcomingKegiatanList',
-            'latestGaleri'
+            'latestKegiatan',
+            'latestGaleri',
+            'profilMasjid'
         ));
     }
 }

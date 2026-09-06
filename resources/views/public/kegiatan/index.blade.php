@@ -1,6 +1,21 @@
 @extends('layouts.public')
 
-@section('title', 'Jadwal Kegiatan — Masjid Grand Centerpoint Bekasi')
+@section('title', 'Jadwal Kegiatan Islam — Masjid Grand Centerpoint Bekasi')
+@section('meta_description', 'Jadwal lengkap kegiatan rutin dan program Islam di Masjid Grand Centerpoint Bekasi — kajian malam Jumat, Tahsin Al-Quran, TPA, yasinan, santunan, dan bakti sosial.')
+@section('meta_keywords', 'jadwal kegiatan masjid bekasi, kajian islam bekasi, program masjid grand centerpoint, tahsin bekasi, TPA bekasi, yasinan bekasi')
+
+@push('head')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@@type": "ListItem", "position": 1, "name": "Beranda", "item": "{{ url('/') }}"},
+        {"@@type": "ListItem", "position": 2, "name": "Jadwal Kegiatan", "item": "{{ route('kegiatan.index') }}"}
+    ]
+}
+</script>
+@endpush
 
 @section('content')
 
@@ -8,7 +23,7 @@
     <div class="absolute inset-0 pattern-islamic opacity-20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <span class="inline-block text-xs font-semibold text-primary-200 uppercase tracking-widest mb-3">Program Masjid</span>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-3">Jadwal Kegiatan</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Jadwal Kegiatan</h1>
         <p class="text-primary-200 text-sm max-w-lg mx-auto">Jadwal lengkap kegiatan rutin dan program islami Masjid Grand Centerpoint Bekasi.</p>
     </div>
 </section>
@@ -17,17 +32,18 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- Filter --}}
-        <form method="GET" class="flex flex-col sm:flex-row gap-3 mb-8">
-            <select name="kategori" class="px-4 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <form method="GET" class="flex flex-wrap sm:flex-nowrap items-center gap-2 mb-8">
+            <select name="kategori" class="w-full sm:w-auto sm:flex-1 sm:min-w-0 px-3 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <option value="">Semua Kategori</option>
                 @foreach($kategoris as $kat)
                 <option value="{{ $kat->slug }}" {{ request('kategori') == $kat->slug ? 'selected' : '' }}>{{ $kat->nama }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">Filter</button>
-            <a href="{{ route('event.index') }}" class="inline-flex items-center justify-center gap-2 border border-primary-600 text-primary-600 hover:bg-primary-50 px-5 py-2.5 rounded-xl text-sm font-medium transition-colors ml-auto">
+            <button type="submit" class="flex-1 sm:flex-none shrink-0 bg-primary-600 hover:bg-primary-700 text-white px-3 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors">Filter</button>
+            <a href="{{ route('event.index') }}" class="flex-1 sm:flex-none shrink-0 inline-flex items-center justify-center gap-1.5 border border-primary-600 text-primary-600 hover:bg-primary-50 px-3 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors sm:ml-auto">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                Lihat Event Khusus
+                <span class="sm:hidden">Event</span>
+                <span class="hidden sm:inline">Lihat Event Khusus</span>
             </a>
         </form>
 
@@ -74,7 +90,7 @@
                 </div>
             </div>
             @empty
-            <div class="col-span-3 text-center py-16">
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-16">
                 <svg class="w-12 h-12 text-neutral-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 <p class="text-neutral-500 text-sm">Belum ada jadwal kegiatan.</p>
             </div>

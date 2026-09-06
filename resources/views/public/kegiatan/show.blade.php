@@ -1,7 +1,59 @@
 @extends('layouts.public')
 
-@section('title', $kegiatan->judul . ' — Masjid Grand Centerpoint Bekasi')
-@section('meta_description', Str::limit(strip_tags($kegiatan->deskripsi), 160))
+@section('title', $kegiatan->judul . ' — Jadwal Kegiatan Masjid Grand Centerpoint Bekasi')
+@section('meta_description', Str::limit(strip_tags($kegiatan->deskripsi ?? 'Kegiatan Islam di Masjid Grand Centerpoint Bekasi — pusat ibadah dan kegiatan umat di Bekasi, Jawa Barat.'), 160))
+@section('og_title', $kegiatan->judul . ' — Masjid Grand Centerpoint Bekasi')
+@section('og_description', Str::limit(strip_tags($kegiatan->deskripsi ?? ''), 160))
+@section('og_image', $kegiatan->thumbnail_url ?? asset('images/mosque/gcp_herosection.png'))
+
+@push('head')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Event",
+    "name": "{{ $kegiatan->judul }}",
+    "description": "{{ Str::limit(strip_tags($kegiatan->deskripsi ?? ''), 200) }}",
+    "startDate": "{{ $kegiatan->tanggal?->format('Y-m-d') }}T{{ $kegiatan->waktu_mulai ?? '00:00' }}",
+    @if($kegiatan->waktu_selesai)
+    "endDate": "{{ $kegiatan->tanggal?->format('Y-m-d') }}T{{ $kegiatan->waktu_selesai }}",
+    @endif
+    "location": {
+        "@@type": "Place",
+        "name": "{{ $kegiatan->lokasi ?? 'Masjid Grand Centerpoint Bekasi' }}",
+        "address": {
+            "@@type": "PostalAddress",
+            "streetAddress": "GRAND Centerpoint Tower C & D, Jalan Ahmad Yani Sentra Niaga Kalimalang A3.2",
+            "addressLocality": "Bekasi",
+            "addressRegion": "Jawa Barat",
+            "addressCountry": "ID"
+        }
+    },
+    "organizer": {
+        "@@type": "Organization",
+        "name": "DKM Masjid Grand Centerpoint Bekasi",
+        "url": "{{ url('/') }}"
+    },
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "isAccessibleForFree": true,
+    "url": "{{ url()->current() }}"
+    @if($kegiatan->thumbnail_url)
+    ,"image": "{{ $kegiatan->thumbnail_url }}"
+    @endif
+}
+</script>
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@@type": "ListItem", "position": 1, "name": "Beranda", "item": "{{ url('/') }}"},
+        {"@@type": "ListItem", "position": 2, "name": "Kegiatan", "item": "{{ route('kegiatan.index') }}"},
+        {"@@type": "ListItem", "position": 3, "name": "{{ $kegiatan->judul }}", "item": "{{ url()->current() }}"}
+    ]
+}
+</script>
+@endpush
 
 @section('content')
 
@@ -9,14 +61,17 @@
 <section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
     <div class="absolute inset-0 pattern-islamic opacity-20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-2 text-primary-300 text-xs mb-4">
-            <a href="{{ route('home') }}" class="hover:text-white transition-colors">Beranda</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <a href="{{ route('kegiatan.index') }}" class="hover:text-white transition-colors">Kegiatan</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <span class="text-white">{{ Str::limit($kegiatan->judul, 40) }}</span>
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-primary-300 text-xs mb-4">
+            <a href="{{ route('home') }}" class="hover:text-white transition-colors shrink-0">Beranda</a>
+            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <a href="{{ route('kegiatan.index') }}" class="hover:text-white transition-colors shrink-0">Kegiatan</a>
+            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <span class="text-white min-w-0 truncate">{{ Str::limit($kegiatan->judul, 40) }}</span>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-bold text-white max-w-3xl">{{ $kegiatan->judul }}</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold max-w-3xl mb-3" style="color: #ffffff;">{{ $kegiatan->judul }}</h1>
+        @if($kegiatan->deskripsi)
+        <p class="text-primary-200 text-sm sm:text-base max-w-2xl leading-relaxed">{{ Str::limit(strip_tags($kegiatan->deskripsi), 180) }}</p>
+        @endif
     </div>
 </section>
 
@@ -27,14 +82,12 @@
 
             {{-- Main --}}
             <div class="lg:col-span-2">
-                @if($kegiatan->thumbnail)
-                <img src="{{ Storage::url($kegiatan->thumbnail) }}" alt="{{ $kegiatan->judul }}"
-                    class="w-full h-64 object-cover rounded-2xl mb-6">
-                @endif
-
-                <div class="prose prose-neutral max-w-none text-sm leading-relaxed text-neutral-700">
-                    {!! nl2br(e($kegiatan->deskripsi)) !!}
+                @if($kegiatan->thumbnail_url)
+                <div class="overflow-hidden rounded-2xl" style="aspect-ratio: 16/9;">
+                    <img src="{{ $kegiatan->thumbnail_url }}" alt="{{ $kegiatan->judul }}"
+                        class="w-full h-full object-cover">
                 </div>
+                @endif
             </div>
 
             {{-- Sidebar Info --}}

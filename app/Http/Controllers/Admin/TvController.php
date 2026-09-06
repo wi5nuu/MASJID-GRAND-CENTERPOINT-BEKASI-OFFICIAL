@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\TvDisplay;
 use App\Models\JadwalShalat;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,48 +41,53 @@ class TvController extends Controller
     public function destroy(TvDisplay $tv) { $tv->delete(); return back()->with('success', 'Konten TV dihapus.'); }
     public function show(TvDisplay $tv) { return view('admin.tv.show', compact('tv')); }
 
+    private static function getTvSettings(): array
+    {
+        $s = fn($k, $d) => Setting::get($k, $d);
+        return [
+            'tv_col_kiri'        => $s('tv_col_kiri',        '1.1'),
+            'tv_col_tengah'      => $s('tv_col_tengah',      '1.8'),
+            'tv_col_kanan'       => $s('tv_col_kanan',       '1.1'),
+            'tv_header_height'   => $s('tv_header_height',   '64'),
+            'tv_footer_height'   => $s('tv_footer_height',   '36'),
+            'tv_show_kiri'       => $s('tv_show_kiri',       '1'),
+            'tv_show_kanan'      => $s('tv_show_kanan',      '1'),
+            'tv_show_footer'     => $s('tv_show_footer',     '1'),
+            'tv_show_shalat_jum' => $s('tv_show_shalat_jum', '1'),
+            'tv_show_wifi'       => $s('tv_show_wifi',       '1'),
+            'tv_show_donasi'     => $s('tv_show_donasi',     '1'),
+            'tv_show_countdown'  => $s('tv_show_countdown',  '1'),
+            'tv_show_kegiatan'   => $s('tv_show_kegiatan',   '1'),
+            'stream_mode'        => $s('stream_mode',        'youtube'),
+            'stream_is_live'     => $s('stream_is_live',     '0'),
+            'stream_label'       => $s('stream_label',       'Live Masjid'),
+            'stream_camera_name' => $s('stream_camera_name', ''),
+            'tv_live_url'        => $s('tv_live_url',        ''),
+            'wifi_ssid'          => $s('wifi_ssid',          'MasjidGCP'),
+            'wifi_password'      => $s('wifi_password',      'masjidgcp2024'),
+            'donasi_rekening'    => $s('donasi_rekening',    "Bank Syariah Indonesia\nNo. Rek: 1234567890\na.n. Masjid Grand Centerpoint"),
+            'running_text'       => $s('running_text',       'Selamat datang di Masjid Grand Centerpoint Bekasi.'),
+        ];
+    }
+
     public function display()
     {
-        $shalat   = JadwalShalat::whereDate('tanggal', today())->first();
+        $shalat = JadwalShalat::whereDate('tanggal', today())->first();
 
-        // Jika tidak ada data hari ini, auto-fetch dari API
         if (!$shalat) {
-            \App\Http\Controllers\Admin\ShalatController::fetchToday();
+            (new ShalatController())->fetchToday();
             $shalat = JadwalShalat::whereDate('tanggal', today())->first();
         }
 
-        $displays = TvDisplay::where('is_active', true)->orderBy('urutan')->get();
+        $displays  = TvDisplay::where('is_active', true)->orderBy('urutan')->get();
+        $settings  = self::getTvSettings();
 
-        return view('tv.display', compact('shalat', 'displays'));
+        return view('tv.display', compact('shalat', 'displays', 'settings'));
     }
 
     public function layout()
     {
-        $settings = [
-            'tv_col_kiri'        => \App\Models\Setting::get('tv_col_kiri',        '1.1'),
-            'tv_col_tengah'      => \App\Models\Setting::get('tv_col_tengah',       '1.8'),
-            'tv_col_kanan'       => \App\Models\Setting::get('tv_col_kanan',        '1.1'),
-            'tv_header_height'   => \App\Models\Setting::get('tv_header_height',    '64'),
-            'tv_footer_height'   => \App\Models\Setting::get('tv_footer_height',    '36'),
-            'tv_show_kiri'       => \App\Models\Setting::get('tv_show_kiri',        '1'),
-            'tv_show_kanan'      => \App\Models\Setting::get('tv_show_kanan',       '1'),
-            'tv_show_footer'     => \App\Models\Setting::get('tv_show_footer',      '1'),
-            'tv_show_shalat_jum' => \App\Models\Setting::get('tv_show_shalat_jum',  '1'),
-            'tv_show_wifi'       => \App\Models\Setting::get('tv_show_wifi',        '1'),
-            'tv_show_donasi'     => \App\Models\Setting::get('tv_show_donasi',      '1'),
-            'tv_show_countdown'  => \App\Models\Setting::get('tv_show_countdown',   '1'),
-            'tv_show_kegiatan'   => \App\Models\Setting::get('tv_show_kegiatan',    '1'),
-            'stream_mode'        => \App\Models\Setting::get('stream_mode',         'youtube'),
-            'stream_is_live'     => \App\Models\Setting::get('stream_is_live',      '0'),
-            'stream_label'       => \App\Models\Setting::get('stream_label',        'Live Masjid'),
-            'stream_camera_name' => \App\Models\Setting::get('stream_camera_name',  ''),
-            'tv_live_url'        => \App\Models\Setting::get('tv_live_url',         ''),
-            'wifi_ssid'          => \App\Models\Setting::get('wifi_ssid',           'MasjidGCP'),
-            'wifi_password'      => \App\Models\Setting::get('wifi_password',       'masjidgcp2024'),
-            'donasi_rekening'    => \App\Models\Setting::get('donasi_rekening',     "Bank Syariah Indonesia\nNo. Rek: 1234567890\na.n. Masjid Grand Centerpoint"),
-            'running_text'       => \App\Models\Setting::get('running_text',        'Selamat datang di Masjid Grand Centerpoint Bekasi.'),
-        ];
-
+        $settings = self::getTvSettings();
         return view('admin.tv.layout', compact('settings'));
     }
 

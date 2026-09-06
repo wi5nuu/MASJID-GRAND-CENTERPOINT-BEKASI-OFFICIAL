@@ -48,7 +48,32 @@ class DonasiController extends Controller
     public function update(Request $request, Donasi $donasi)
     {
         $request->validate(['status' => 'required|in:pending,confirmed,rejected']);
-        $donasi->update($request->only('status','nama','jumlah','metode','pesan'));
+
+        $wasConfirmed = $donasi->status === 'confirmed';
+        $nowConfirmed = $request->status === 'confirmed';
+
+        $data = $request->only('status', 'nama', 'jumlah', 'metode', 'pesan');
+
+        // Set confirmed_at saat pertama kali status di-set ke confirmed
+        if ($nowConfirmed && !$donasi->confirmed_at) {
+            $data['confirmed_at'] = now();
+        }
+
+        // Jika status berubah dari confirmed ke lain, hapus confirmed_at
+        if ($wasConfirmed && !$nowConfirmed) {
+            $data['confirmed_at'] = null;
+            // Rollback increment terkumpul jika ada program
+            if ($donasi->program_id && $donasi->program) {
+                $donasi->program->decrement('terkumpul', $donasi->jumlah);
+            }
+        }
+
+        // Jika baru confirmed (belum pernah) dan ada program, increment
+        if ($nowConfirmed && !$wasConfirmed && $donasi->program_id && $donasi->program) {
+            $donasi->program->increment('terkumpul', $donasi->jumlah);
+        }
+
+        $donasi->update($data);
         return redirect()->route('admin.donasi.index')->with('success', 'Donasi berhasil diperbarui.');
     }
 
@@ -56,10 +81,17 @@ class DonasiController extends Controller
 
     public function konfirmasi(Donasi $donasi)
     {
+        // Guard: jangan double-increment jika sudah confirmed sebelumnya
+        if ($donasi->status === 'confirmed') {
+            return back()->with('info', 'Donasi ini sudah dikonfirmasi sebelumnya.');
+        }
+
         $donasi->update(['status' => 'confirmed', 'confirmed_at' => now()]);
-        if ($donasi->program_id) {
+
+        if ($donasi->program_id && $donasi->program) {
             $donasi->program->increment('terkumpul', $donasi->jumlah);
         }
+
         return back()->with('success', 'Donasi berhasil dikonfirmasi. Jazakallahu khairan.');
     }
 }

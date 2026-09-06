@@ -44,7 +44,7 @@ class DonasiController extends Controller
             'pesan'      => 'nullable|string|max:500',
         ]);
 
-        $kodeUnik = rand(100, 999);
+        $kodeUnik = random_int(100, 999);
 
         $donasi = Donasi::create([
             'program_id' => $request->program_id,

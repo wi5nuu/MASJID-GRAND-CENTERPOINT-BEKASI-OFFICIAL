@@ -9,7 +9,7 @@
 
 @section('content')
 <div class="max-w-2xl">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
             <h1 class="text-xl font-bold text-neutral-900">{{ isset($video) ? 'Edit Video' : 'Tambah Video Baru' }}</h1>
             <p class="text-sm text-neutral-500 mt-0.5">{{ isset($video) ? 'Perbarui informasi video' : 'Tambahkan video ceramah, kajian, atau dokumentasi' }}</p>

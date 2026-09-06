@@ -16,7 +16,7 @@
 <section class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <form method="GET" class="flex flex-col sm:flex-row gap-3 mb-8">
+        <form method="GET" class="flex flex-wrap items-center gap-3 mb-8">
             <select name="kategori" class="px-4 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <option value="">Semua Kategori</option>
                 @foreach($kategoris as $kat)
@@ -62,7 +62,7 @@
                 </div>
             </article>
             @empty
-            <div class="col-span-3 text-center py-16">
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-16">
                 <svg class="w-12 h-12 text-neutral-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
                 <p class="text-neutral-500 text-sm">Belum ada video.</p>
             </div>

@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // URL path login admin — ubah di .env agar tidak mudah ditebak bot
+    // Contoh: LOGIN_PATH=masuk-panel-gcp atau LOGIN_PATH=auth-7x9k2q
+    'login_path' => env('LOGIN_PATH', 'login'),
+
 ];

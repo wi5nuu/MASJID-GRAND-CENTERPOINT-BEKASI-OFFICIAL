@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pengurus;
+use App\Traits\OptimizesImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class PengurusController extends Controller
 {
+    use OptimizesImages;
+
     public function index() { return view('admin.pengurus.index', ['pengurusList' => Pengurus::orderBy('urutan')->paginate(20)]); }
 
     public function create() { return view('admin.pengurus.form'); }
@@ -22,7 +25,7 @@ class PengurusController extends Controller
             'bio'     => 'nullable|string',
             'urutan'  => 'nullable|integer',
         ]);
-        if ($request->hasFile('foto')) $v['foto'] = $request->file('foto')->store('pengurus', 'public');
+        if ($request->hasFile('foto')) $v['foto'] = $this->optimizeImage($request->file('foto'), 'pengurus');
         $v['is_active'] = $request->boolean('is_active', true);
         Pengurus::create($v);
         return redirect()->route('admin.pengurus.index')->with('success', 'Pengurus berhasil ditambahkan.');
@@ -35,7 +38,7 @@ class PengurusController extends Controller
         $v = $request->validate(['nama' => 'required|string|max:255', 'jabatan' => 'required|string|max:255', 'foto' => 'nullable|image|max:2048']);
         if ($request->hasFile('foto')) {
             if ($pengurus->foto) Storage::disk('public')->delete($pengurus->foto);
-            $v['foto'] = $request->file('foto')->store('pengurus', 'public');
+            $v['foto'] = $this->optimizeImage($request->file('foto'), 'pengurus');
         }
         $v['is_active'] = $request->boolean('is_active', true);
         $pengurus->update(array_merge($v, $request->only('bio','periode','email','telepon','urutan')));

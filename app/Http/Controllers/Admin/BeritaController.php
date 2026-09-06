@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Berita;
 use App\Models\Kategori;
+use App\Traits\OptimizesImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class BeritaController extends Controller
 {
+    use OptimizesImages;
+
     public function index(Request $request)
     {
         $query = Berita::with('kategori', 'user')->orderByDesc('created_at');
@@ -44,11 +47,17 @@ class BeritaController extends Controller
         ]);
 
         $validated['user_id'] = auth()->id();
-        $validated['slug'] = Str::slug($request->judul);
+        $baseSlug = Str::slug($request->judul);
+        $slug     = $baseSlug;
+        $i        = 1;
+        while (Berita::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $i++;
+        }
+        $validated['slug'] = $slug;
         $validated['is_featured'] = $request->boolean('is_featured');
 
         if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = $request->file('thumbnail')->store('berita', 'public');
+            $validated['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'berita');
         }
 
         if ($validated['status'] === 'published' && !isset($validated['published_at'])) {
@@ -83,7 +92,7 @@ class BeritaController extends Controller
 
         if ($request->hasFile('thumbnail')) {
             if ($berita->thumbnail) Storage::disk('public')->delete($berita->thumbnail);
-            $validated['thumbnail'] = $request->file('thumbnail')->store('berita', 'public');
+            $validated['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'berita');
         }
 
         if ($validated['status'] === 'published' && !$berita->published_at) {

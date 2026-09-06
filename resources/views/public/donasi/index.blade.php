@@ -8,7 +8,7 @@
     <div class="absolute inset-0 pattern-islamic opacity-20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p class="font-arabic text-2xl text-gold-300 mb-3" dir="rtl">مَن ذَا الَّذِي يُقْرِضُ اللَّهَ قَرْضًا حَسَنًا</p>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-3">Program Donasi</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Program Donasi</h1>
         <p class="text-primary-200 text-sm max-w-lg mx-auto">Salurkan infak dan sedekah Anda untuk kemakmuran masjid dan kemaslahatan umat.</p>
     </div>
 </section>
@@ -62,7 +62,7 @@
                 </div>
             </div>
             @empty
-            <div class="col-span-3 text-center py-16">
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-16">
                 <svg class="w-12 h-12 text-neutral-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                 <p class="text-neutral-500 text-sm">Belum ada program donasi aktif.</p>
             </div>

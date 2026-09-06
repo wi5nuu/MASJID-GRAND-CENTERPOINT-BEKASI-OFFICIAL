@@ -20,14 +20,14 @@
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     @php
         $statCards = [
-            ['label'=>'Total Berita', 'value'=> $stats['berita'] ?? 0, 'change'=>'+3 bulan ini', 'positive'=>true, 'color'=>'primary', 'icon'=>'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z'],
-            ['label'=>'Total Kegiatan', 'value'=> $stats['kegiatan'] ?? 0, 'change'=>'Aktif bulan ini', 'positive'=>true, 'color'=>'primary', 'icon'=>'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
-            ['label'=>'Total Donasi', 'value'=> 'Rp '.number_format($stats['donasi'] ?? 0, 0, ',', '.'), 'change'=>'Bulan ini', 'positive'=>true, 'color'=>'gold', 'icon'=>'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'],
-            ['label'=>'Total Jamaah', 'value'=> $stats['users'] ?? 0, 'change'=>'Pengguna terdaftar', 'positive'=>true, 'color'=>'primary', 'icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
+            ['label'=>'Total Berita', 'value'=> $stats['berita'] ?? 0, 'change'=>'+'.($stats['beritaBulanIni'] ?? 0).' bulan ini', 'positive'=>true, 'color'=>'primary', 'icon'=>'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z'],
+            ['label'=>'Kegiatan Aktif', 'value'=> $stats['kegiatan'] ?? 0, 'change'=>($stats['kegiatanBulanIni'] ?? 0).' bulan ini', 'positive'=>true, 'color'=>'primary', 'icon'=>'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+            ['label'=>'Donasi Bulan Ini', 'value'=> 'Rp '.number_format($stats['donasi'] ?? 0, 0, ',', '.'), 'change'=>($stats['donasiTransaksi'] ?? 0).' transaksi terkonfirmasi', 'positive'=>true, 'color'=>'gold', 'icon'=>'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'],
+            ['label'=>'Total Jamaah', 'value'=> $stats['users'] ?? 0, 'change'=>($stats['usersPending'] ?? 0).' menunggu persetujuan', 'positive'=>($stats['usersPending'] ?? 0) === 0, 'color'=>'primary', 'icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
         ];
     @endphp
     @foreach($statCards as $card)
-    <div class="bg-white rounded-2xl border border-neutral-200 p-5">
+    <div class="bg-white rounded-2xl border border-neutral-200 p-4 sm:p-5 min-w-0">
         <div class="flex items-start justify-between mb-3">
             <div class="w-9 h-9 rounded-xl {{ $card['color'] === 'gold' ? 'bg-gold-100' : 'bg-primary-100' }} flex items-center justify-center">
                 <svg class="w-4 h-4 {{ $card['color'] === 'gold' ? 'text-gold-600' : 'text-primary-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,12 +35,47 @@
                 </svg>
             </div>
         </div>
-        <p class="text-xl font-bold text-neutral-900 mb-0.5">{{ $card['value'] }}</p>
+        <p class="text-lg sm:text-xl font-bold text-neutral-900 mb-0.5 break-words">{{ $card['value'] }}</p>
         <p class="text-xs text-neutral-400">{{ $card['label'] }}</p>
         <p class="text-xs {{ $card['positive'] ? 'text-primary-600' : 'text-red-500' }} mt-1 font-medium">{{ $card['change'] }}</p>
     </div>
     @endforeach
 </div>
+
+{{-- Perlu Perhatian --}}
+@if(($attention['total'] ?? 0) > 0)
+<div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
+    <div class="flex items-center gap-2 mb-4">
+        <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        <h2 class="font-semibold text-amber-900 text-sm">Perlu Perhatian ({{ $attention['total'] }})</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        @if(($attention['pendingUsers'] ?? 0) > 0)
+        <a href="{{ route('admin.users.index', ['role' => 'jamaah', 'status' => 'pending']) }}" class="flex items-center gap-3 bg-white rounded-xl border border-amber-200 px-4 py-3 hover:shadow-md transition-shadow">
+            <span class="text-2xl font-bold text-amber-600">{{ $attention['pendingUsers'] }}</span>
+            <span class="text-xs text-neutral-600 leading-snug">Jamaah menunggu persetujuan</span>
+        </a>
+        @endif
+        @if(($attention['pendingDonasi'] ?? 0) > 0)
+        <a href="{{ route('admin.donasi.index') }}" class="flex items-center gap-3 bg-white rounded-xl border border-amber-200 px-4 py-3 hover:shadow-md transition-shadow">
+            <span class="text-2xl font-bold text-amber-600">{{ $attention['pendingDonasi'] }}</span>
+            <span class="text-xs text-neutral-600 leading-snug">Donasi menunggu konfirmasi</span>
+        </a>
+        @endif
+        @if(($attention['unreadKontak'] ?? 0) > 0)
+        <a href="{{ route('admin.kontak.index') }}" class="flex items-center gap-3 bg-white rounded-xl border border-amber-200 px-4 py-3 hover:shadow-md transition-shadow">
+            <span class="text-2xl font-bold text-amber-600">{{ $attention['unreadKontak'] }}</span>
+            <span class="text-xs text-neutral-600 leading-snug">Pesan belum dibaca</span>
+        </a>
+        @endif
+    </div>
+</div>
+@else
+<div class="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4 mb-6">
+    <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <p class="text-sm text-emerald-800">Semua clear — tidak ada yang perlu perhatian saat ini.</p>
+</div>
+@endif
 
 {{-- Main Content Grid --}}
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -54,20 +89,11 @@
                 <h2 class="font-semibold">Jadwal Shalat Hari Ini</h2>
                 <a href="{{ route('admin.shalat.index') }}" class="text-primary-200 hover:text-white text-xs transition-colors">Edit</a>
             </div>
-            <div class="grid grid-cols-5 gap-2">
-                @php
-                    $shalatList = $prayerTimes ?? [
-                        ['name' => 'Subuh', 'time' => '04:45'],
-                        ['name' => 'Dzuhur', 'time' => '12:00'],
-                        ['name' => 'Ashar', 'time' => '15:15'],
-                        ['name' => 'Maghrib', 'time' => '18:02'],
-                        ['name' => 'Isya', 'time' => '19:15'],
-                    ];
-                @endphp
-                @foreach($shalatList as $shalat)
+            <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                @foreach($prayerTimes ?? [] as $shalat)
                 <div class="text-center bg-white/10 rounded-xl py-3 px-1">
-                    <p class="text-primary-200 text-xs mb-0.5">{{ is_array($shalat) ? $shalat['name'] : $shalat->name }}</p>
-                    <p class="text-white font-bold text-sm">{{ is_array($shalat) ? $shalat['time'] : $shalat->time }}</p>
+                    <p class="text-primary-200 text-xs mb-0.5">{{ $shalat['name'] }}</p>
+                    <p class="text-white font-bold text-sm">{{ $shalat['time'] }}</p>
                 </div>
                 @endforeach
             </div>
@@ -97,15 +123,14 @@
                     </span>
                 </div>
                 @empty
-                @for($i = 0; $i < 4; $i++)
-                <div class="flex items-center gap-3 px-5 py-3">
-                    <div class="w-8 h-8 rounded-lg skeleton"></div>
-                    <div class="flex-1 space-y-1.5">
-                        <div class="h-3 skeleton rounded w-3/4"></div>
-                        <div class="h-2.5 skeleton rounded w-1/3"></div>
-                    </div>
+                <div class="px-5 py-8 text-center">
+                    <svg class="w-8 h-8 text-neutral-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                    <p class="text-xs text-neutral-400 mb-3">Belum ada berita. Mulai tulis kabar terbaru masjid.</p>
+                    <a href="{{ route('admin.berita.create') }}" class="inline-flex items-center gap-1 text-xs font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 px-3 py-1.5 rounded-lg transition-colors">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Tulis Berita
+                    </a>
                 </div>
-                @endfor
                 @endforelse
             </div>
         </div>
@@ -198,11 +223,18 @@
                     <span class="font-medium text-neutral-700">{{ app()->version() }}</span>
                 </div>
                 <div class="flex items-center justify-between text-xs">
-                    <span class="text-neutral-500">Status Website</span>
+                    <span class="text-neutral-500">Status Database</span>
+                    @if($dbOnline ?? false)
                     <span class="inline-flex items-center gap-1 text-primary-700 font-medium">
                         <span class="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
                         Online
                     </span>
+                    @else
+                    <span class="inline-flex items-center gap-1 text-red-600 font-medium">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                        Offline
+                    </span>
+                    @endif
                 </div>
                 <div class="flex items-center justify-between text-xs">
                     <span class="text-neutral-500">Environment</span>

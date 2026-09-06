@@ -9,7 +9,7 @@
 
 @section('content')
 <div class="max-w-xl">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <h1 class="text-xl font-bold text-neutral-900">{{ isset($user) ? 'Edit Pengguna' : 'Tambah Pengguna' }}</h1>
         <a href="{{ route('admin.users.index') }}" class="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-700 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
@@ -68,6 +68,22 @@
                 </select>
                 @error('role_id')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
             </div>
+
+            @if(isset($user) && $user->hasRole('jamaah'))
+            <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-1.5">Nomor Unit</label>
+                <input type="text" name="unit_no" value="{{ old('unit_no', $user->unit_no ?? '') }}"
+                    class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="Contoh: C0701">
+                @error('unit_no')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-1.5">Disetujui pada</label>
+                <input type="datetime-local" name="approved_at" value="{{ old('approved_at', $user->approved_at ? $user->approved_at->format('Y-m-d\\TH:i') : '') }}"
+                    class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+            </div>
+            @endif
 
             <div class="flex items-center gap-3">
                 <input type="hidden" name="is_active" value="0">

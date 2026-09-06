@@ -7,6 +7,94 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Prayer times & JS functions MUST be defined before Alpine initializes --}}
+    <script>
+    window.prayerTimes = {
+        subuh:   '{{ $shalat?->subuh   ?? "04:34" }}',
+        syuruq:  '{{ $shalat?->syuruq  ?? "05:51" }}',
+        dzuhur:  '{{ $shalat?->dzuhur  ?? "11:51" }}',
+        ashar:   '{{ $shalat?->ashar   ?? "15:08" }}',
+        maghrib: '{{ $shalat?->maghrib ?? "17:51" }}',
+        isya:    '{{ $shalat?->isya    ?? "19:01" }}',
+    };
+
+    // Hijri date via Intl API
+    try {
+        window.hijriDate = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        }).format(new Date());
+    } catch(e) { window.hijriDate = ''; }
+
+    // ── Clock ──
+    function tvClock() {
+        return {
+            time: '00:00:00',
+            wib: 'WIB',
+            init() { this.tick(); setInterval(() => this.tick(), 1000); },
+            tick() {
+                const now = new Date();
+                this.time = [now.getHours(), now.getMinutes(), now.getSeconds()]
+                    .map(n => String(n).padStart(2,'0')).join(':');
+            }
+        }
+    }
+
+    // ── Prayer Highlight ──
+    function prayerHighlight() {
+        return {
+            activePrayer: null,
+            init() { this.update(); setInterval(() => this.update(), 60000); },
+            update() {
+                const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+                const toMin  = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+                const keys   = ['subuh','syuruq','dzuhur','ashar','maghrib','isya'];
+                let active   = null;
+                for (let i = keys.length-1; i >= 0; i--) {
+                    if (nowMin >= toMin(window.prayerTimes[keys[i]])) { active = keys[i]; break; }
+                }
+                this.activePrayer = active;
+            }
+        }
+    }
+
+    // ── Prayer Countdown ──
+    function prayerCountdown() {
+        return {
+            nextPrayer: '—',
+            hours: '00', minutes: '00', seconds: '00',
+            init() { this.update(); setInterval(() => this.update(), 1000); },
+            update() {
+                const now    = new Date();
+                const nowSec = now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
+                const labels = { subuh:'Subuh', syuruq:'Syuruq', dzuhur:'Dzuhur', ashar:'Ashar', maghrib:'Maghrib', isya:'Isya' };
+                const toSec  = t => { const [h,m] = t.split(':').map(Number); return h*3600+m*60; };
+                let minDiff  = Infinity, target = null;
+                for (const [key, label] of Object.entries(labels)) {
+                    let diff = toSec(window.prayerTimes[key]) - nowSec;
+                    if (diff <= 0) diff += 86400;
+                    if (diff < minDiff) { minDiff = diff; target = label; }
+                }
+                this.nextPrayer = target ?? '—';
+                this.hours   = String(Math.floor(minDiff / 3600)).padStart(2,'0');
+                this.minutes = String(Math.floor((minDiff % 3600) / 60)).padStart(2,'0');
+                this.seconds = String(minDiff % 60).padStart(2,'0');
+            }
+        }
+    }
+
+    // ── Announcement Carousel ──
+    function tvAnnouncement(items) {
+        return {
+            items, current: 0,
+            init() {
+                if (this.items.length > 1)
+                    setInterval(() => { this.current = (this.current+1) % this.items.length; }, 10000);
+            }
+        }
+    }
+    </script>
+
     <style>
         * { scrollbar-width: none; -ms-overflow-style: none; }
         *::-webkit-scrollbar { display: none; }
@@ -112,29 +200,29 @@
 
     {{-- ══ MAIN CONTENT ══ --}}
     @php
-        $colKiri        = \App\Models\Setting::get('tv_col_kiri',        '1.1');
-        $colTengah      = \App\Models\Setting::get('tv_col_tengah',      '1.8');
-        $colKanan       = \App\Models\Setting::get('tv_col_kanan',       '1.1');
-        $headerHeight   = \App\Models\Setting::get('tv_header_height',   '64');
-        $footerHeight   = \App\Models\Setting::get('tv_footer_height',   '36');
-        $showKiri       = \App\Models\Setting::get('tv_show_kiri',       '1') === '1';
-        $showKanan      = \App\Models\Setting::get('tv_show_kanan',      '1') === '1';
-        $showFooter     = \App\Models\Setting::get('tv_show_footer',     '1') === '1';
-        $showShalatJum  = \App\Models\Setting::get('tv_show_shalat_jum', '1') === '1';
-        $showCountdown  = \App\Models\Setting::get('tv_show_countdown',  '1') === '1';
-        $showDonasi     = \App\Models\Setting::get('tv_show_donasi',     '1') === '1';
-        $showWifi       = \App\Models\Setting::get('tv_show_wifi',       '1') === '1';
-        $showKegiatan   = \App\Models\Setting::get('tv_show_kegiatan',   '1') === '1';
+        // Gunakan $settings yang sudah di-pass dari TvController@display()
+        $colKiri       = $settings['tv_col_kiri'];
+        $colTengah     = $settings['tv_col_tengah'];
+        $colKanan      = $settings['tv_col_kanan'];
+        $showKiri      = $settings['tv_show_kiri']       === '1';
+        $showKanan     = $settings['tv_show_kanan']      === '1';
+        $showFooter    = $settings['tv_show_footer']     === '1';
+        $showShalatJum = $settings['tv_show_shalat_jum'] === '1';
+        $showCountdown = $settings['tv_show_countdown']  === '1';
+        $showDonasi    = $settings['tv_show_donasi']     === '1';
+        $showWifi      = $settings['tv_show_wifi']       === '1';
+        $showKegiatan  = $settings['tv_show_kegiatan']   === '1';
 
-        // Grid columns — hide kiri/kanan jika dinonaktifkan
+        // Grid columns — exclude kolom yang dinonaktifkan
         $gridCols = '';
-        if ($showKiri)   $gridCols .= "minmax(0,{$colKiri}fr) ";
+        if ($showKiri)  $gridCols .= "minmax(0,{$colKiri}fr) ";
         $gridCols .= "minmax(0,{$colTengah}fr)";
-        if ($showKanan)  $gridCols .= " minmax(0,{$colKanan}fr)";
+        if ($showKanan) $gridCols .= " minmax(0,{$colKanan}fr)";
     @endphp
     <main style="flex:1; display:grid; grid-template-columns: {{ $gridCols }}; overflow:hidden;">
 
         {{-- ── KIRI: Jadwal Shalat ── --}}
+        @if($showKiri)
         <div style="background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%); padding: clamp(8px,1.2vh,16px) clamp(14px,1.6vw,24px); display:flex; flex-direction:column; gap:clamp(4px,0.6vh,8px); border-right: 1px solid #bbf7d0; overflow:hidden;">
 
             {{-- Title --}}
@@ -180,14 +268,15 @@
                 @endif
             </div>
         </div>
+        @endif
 
         {{-- ── TENGAH: Live Camera / Pengumuman ── --}}
         @php
-            $streamMode    = \App\Models\Setting::get('stream_mode', 'youtube');
-            $streamIsLive  = (bool) \App\Models\Setting::get('stream_is_live', false);
-            $streamLabel   = \App\Models\Setting::get('stream_label', 'Live Masjid');
-            $cameraName    = \App\Models\Setting::get('stream_camera_name', '');
-            $youtubeUrl    = \App\Models\Setting::get('tv_live_url', '');
+            $streamMode    = $settings['stream_mode'];
+            $streamIsLive  = (bool) $settings['stream_is_live'];
+            $streamLabel   = $settings['stream_label'];
+            $cameraName    = $settings['stream_camera_name'];
+            $youtubeUrl    = $settings['tv_live_url'];
             $youtubeEmbed  = '';
             if ($youtubeUrl) {
                 if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $youtubeUrl, $m)) {
@@ -299,9 +388,11 @@
         </div>
 
         {{-- ── KANAN: Countdown + Info ── --}}
+        @if($showKanan)
         <div style="background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%); padding: clamp(8px,1.2vh,16px) clamp(14px,1.6vw,24px); display:flex; flex-direction:column; gap:clamp(6px,0.8vh,10px); border-left: 1px solid #bbf7d0; overflow:hidden;">
 
             {{-- Countdown --}}
+            @if($showCountdown)
             <div style="background: linear-gradient(135deg, #14532d, #166534); border-radius:16px; padding:clamp(10px,1.5vh,18px) clamp(10px,1.2vw,16px); text-align:center; border:1.5px solid #15803d;"
                  x-data="prayerCountdown()">
                 <p style="color:#86efac; font-size:clamp(8px,0.75vw,10px); font-weight:700; letter-spacing:3px; text-transform:uppercase; margin-bottom:4px;">Waktu Menuju Shalat</p>
@@ -314,8 +405,10 @@
                     <div class="countdown-digit" x-text="seconds">00</div>
                 </div>
             </div>
+            @endif
 
             {{-- Donasi --}}
+            @if($showDonasi)
             <div style="background:white; border:1.5px solid #bbf7d0; border-radius:16px; padding:clamp(10px,1.3vh,16px) clamp(10px,1.2vw,16px);">
                 <div style="display:flex; align-items:center; gap:8px; margin-bottom:clamp(6px,0.8vh,10px);">
                     <div style="width:clamp(24px,2.2vw,32px); height:clamp(24px,2.2vw,32px); background:linear-gradient(135deg,#166534,#16a34a); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -324,7 +417,7 @@
                     <p style="font-weight:800; color:#14532d; font-size:clamp(11px,1.05vw,14px);">Donasi Masjid</p>
                 </div>
                 <div style="background:#f0fdf4; border-radius:10px; padding:clamp(6px,0.8vh,10px); margin-bottom:clamp(6px,0.8vh,10px);">
-                    <p style="color:#166534; font-size:clamp(9px,0.85vw,12px); line-height:1.6; white-space:pre-line;">{{ \App\Models\Setting::get('donasi_rekening', "Bank Syariah Indonesia\nNo. Rek: 1234567890\na.n. Masjid Grand Centerpoint") }}</p>
+                    <p style="color:#166534; font-size:clamp(9px,0.85vw,12px); line-height:1.6; white-space:pre-line;">{{ $settings['donasi_rekening'] }}</p>
                 </div>
                 <div style="border-top:1px solid #bbf7d0; padding-top:clamp(6px,0.8vh,10px);">
                     <p style="color:#6b7280; font-size:clamp(8px,0.75vw,10px); font-weight:600; letter-spacing:1px; text-transform:uppercase;">Total Donasi Bulan Ini</p>
@@ -333,8 +426,10 @@
                     </p>
                 </div>
             </div>
+            @endif
 
             {{-- Wifi --}}
+            @if($showWifi)
             <div style="background:white; border:1.5px solid #bbf7d0; border-radius:16px; padding:clamp(10px,1.3vh,16px) clamp(10px,1.2vw,16px);">
                 <div style="display:flex; align-items:center; gap:8px; margin-bottom:clamp(8px,1vh,12px);">
                     <div style="width:clamp(24px,2.2vw,32px); height:clamp(24px,2.2vw,32px); background:linear-gradient(135deg,#166534,#16a34a); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
@@ -345,16 +440,18 @@
                 <div style="display:flex; flex-direction:column; gap:6px;">
                     <div style="background:#f0fdf4; border-radius:8px; padding:clamp(5px,0.7vh,8px) clamp(8px,0.9vw,12px); display:flex; align-items:center; justify-content:space-between;">
                         <span style="color:#6b7280; font-size:clamp(9px,0.8vw,11px);">SSID</span>
-                        <span style="color:#14532d; font-weight:700; font-size:clamp(10px,0.95vw,13px);">{{ \App\Models\Setting::get('wifi_ssid', 'MasjidGCP') }}</span>
+                        <span style="color:#14532d; font-weight:700; font-size:clamp(10px,0.95vw,13px);">{{ $settings['wifi_ssid'] }}</span>
                     </div>
                     <div style="background:#f0fdf4; border-radius:8px; padding:clamp(5px,0.7vh,8px) clamp(8px,0.9vw,12px); display:flex; align-items:center; justify-content:space-between;">
                         <span style="color:#6b7280; font-size:clamp(9px,0.8vw,11px);">Password</span>
-                        <span style="color:#14532d; font-weight:700; font-size:clamp(10px,0.95vw,13px); font-family:monospace;">{{ \App\Models\Setting::get('wifi_password', 'masjidgcp2024') }}</span>
+                        <span style="color:#14532d; font-weight:700; font-size:clamp(10px,0.95vw,13px); font-family:monospace;">{{ $settings['wifi_password'] }}</span>
                     </div>
                 </div>
             </div>
+            @endif
 
             {{-- Kegiatan Hari Ini --}}
+            @if($showKegiatan)
             @php
                 $kegiatanHariIni = \App\Models\Kegiatan::whereDate('tanggal', today())->take(2)->get();
             @endphp
@@ -367,132 +464,33 @@
                 @foreach($kegiatanHariIni as $kg)
                 <div style="background:#f0fdf4; border-radius:8px; padding:clamp(5px,0.7vh,8px) clamp(8px,0.9vw,12px); margin-bottom:4px;">
                     <p style="color:#14532d; font-weight:700; font-size:clamp(9px,0.85vw,12px);">{{ $kg->judul }}</p>
-                    @if($kg->waktu)
-                    <p style="color:#6b7280; font-size:clamp(8px,0.75vw,10px);">{{ $kg->waktu }}</p>
+                    @if($kg->waktu_mulai)
+                    <p style="color:#6b7280; font-size:clamp(8px,0.75vw,10px);">{{ $kg->waktu_mulai }}@if($kg->waktu_selesai) — {{ $kg->waktu_selesai }}@endif WIB</p>
                     @endif
                 </div>
                 @endforeach
             </div>
             @endif
+            @endif
+
         </div>
+        @endif
     </main>
 
     {{-- ══ RUNNING TEXT ══ --}}
+    @if($showFooter)
     <div style="background: linear-gradient(90deg, #14532d, #166534, #14532d); border-top:2px solid #ca8a04; padding: clamp(5px,0.7vh,9px) 0; overflow:hidden; flex-shrink:0;">
-        @php
-            $runningText = \App\Models\Setting::get('running_text', 'Selamat datang di Masjid Grand Centerpoint Bekasi · Semoga Allah senantiasa meridhoi langkah kita · Aamiin');
-        @endphp
         <div style="overflow:hidden; white-space:nowrap;">
             <span class="marquee-inner" style="color:white; font-size:clamp(11px,1.1vw,15px); font-weight:500; padding-right:80px;">
-                &#9654; &nbsp; {{ $runningText }} &nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp; {{ $runningText }} &nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp; {{ $runningText }}
+                &#9654; &nbsp; {{ $settings['running_text'] }} &nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp; {{ $settings['running_text'] }} &nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp; {{ $settings['running_text'] }}
             </span>
         </div>
     </div>
+    @endif
 
 </div>
 
 <script>
-window.prayerTimes = {
-    subuh:   '{{ $shalat?->subuh   ?? "04:34" }}',
-    syuruq:  '{{ $shalat?->syuruq  ?? "05:51" }}',
-    dzuhur:  '{{ $shalat?->dzuhur  ?? "11:51" }}',
-    ashar:   '{{ $shalat?->ashar   ?? "15:08" }}',
-    maghrib: '{{ $shalat?->maghrib ?? "17:51" }}',
-    isya:    '{{ $shalat?->isya    ?? "19:01" }}',
-};
-
-// ── Clock ──
-function tvClock() {
-    return {
-        time: '00:00:00',
-        wib: 'WIB',
-        init() {
-            this.tick();
-            setInterval(() => this.tick(), 1000);
-        },
-        tick() {
-            const now = new Date();
-            const h = String(now.getHours()).padStart(2,'0');
-            const m = String(now.getMinutes()).padStart(2,'0');
-            const s = String(now.getSeconds()).padStart(2,'0');
-            this.time = `${h}:${m}:${s}`;
-            this.wib  = 'WIB';
-        }
-    }
-}
-
-// ── Prayer Highlight (active prayer) ──
-function prayerHighlight() {
-    return {
-        activePrayer: null,
-        init() {
-            this.update();
-            setInterval(() => this.update(), 60000);
-        },
-        update() {
-            const now   = new Date();
-            const nowMin = now.getHours() * 60 + now.getMinutes();
-            const times  = window.prayerTimes;
-            const toMin  = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
-            const keys   = ['subuh','syuruq','dzuhur','ashar','maghrib','isya'];
-            const mins   = keys.map(k => toMin(times[k]));
-            let active   = null;
-            for (let i = keys.length - 1; i >= 0; i--) {
-                if (nowMin >= mins[i]) { active = keys[i]; break; }
-            }
-            this.activePrayer = active;
-        }
-    }
-}
-
-// ── Prayer Countdown ──
-function prayerCountdown() {
-    return {
-        nextPrayer: '—',
-        hours:   '00',
-        minutes: '00',
-        seconds: '00',
-        init() {
-            this.update();
-            setInterval(() => this.update(), 1000);
-        },
-        update() {
-            const now   = new Date();
-            const nowSec = now.getHours()*3600 + now.getMinutes()*60 + now.getSeconds();
-            const labels = { subuh:'Subuh', syuruq:'Syuruq', dzuhur:'Dzuhur', ashar:'Ashar', maghrib:'Maghrib', isya:'Isya' };
-            const times  = window.prayerTimes;
-            const toSec  = t => { const [h,m] = t.split(':').map(Number); return h*3600+m*60; };
-
-            let minDiff = Infinity, target = null;
-            for (const [key, label] of Object.entries(labels)) {
-                let diff = toSec(times[key]) - nowSec;
-                if (diff < 0) diff += 86400;
-                if (diff < minDiff) { minDiff = diff; target = label; }
-            }
-
-            this.nextPrayer = target ?? '—';
-            this.hours   = String(Math.floor(minDiff / 3600)).padStart(2,'0');
-            this.minutes = String(Math.floor((minDiff % 3600) / 60)).padStart(2,'0');
-            this.seconds = String(minDiff % 60).padStart(2,'0');
-        }
-    }
-}
-
-// ── Announcement Carousel ──
-function tvAnnouncement(items) {
-    return {
-        items: items,
-        current: 0,
-        init() {
-            if (this.items.length > 1) {
-                setInterval(() => {
-                    this.current = (this.current + 1) % this.items.length;
-                }, 10000);
-            }
-        }
-    }
-}
-
 // ── TV Stream (CCTV HLS + YouTube) ──
 function tvStream(config) {
     return {

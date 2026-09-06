@@ -22,6 +22,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'is_active',
+        'phone',
+        'avatar',
+        'bio',
+        'unit_no',
+        'approved_at',
     ];
 
     /**
@@ -43,7 +50,23 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'approved_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function hasRole(string $roleName): bool
+    {
+        return $this->role && $this->role->name === $roleName;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->role?->name, ['superadmin', 'admin']);
     }
 }

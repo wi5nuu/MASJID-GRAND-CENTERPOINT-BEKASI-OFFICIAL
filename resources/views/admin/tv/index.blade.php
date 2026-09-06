@@ -7,12 +7,12 @@
 
 @section('content')
 
-<div class="flex items-center justify-between mb-6">
-    <div>
+<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between mb-6">
+    <div class="min-w-0">
         <h1 class="text-xl font-bold text-neutral-900">TV Display</h1>
         <p class="text-sm text-neutral-500 mt-0.5">Kelola konten running text, popup, dan pengumuman</p>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex flex-wrap items-center gap-2 sm:gap-3">
         <a href="{{ route('tv.display') }}" target="_blank"
             class="inline-flex items-center gap-2 border border-neutral-300 text-neutral-600 hover:bg-neutral-50 text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -40,7 +40,8 @@
     </h2>
     @if($items->count() > 0)
     <div class="bg-white rounded-2xl border border-neutral-200 overflow-hidden">
-        <table class="w-full text-sm">
+        <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[560px]">
             <tbody class="divide-y divide-neutral-100">
                 @foreach($items->sortBy('urutan') as $item)
                 <tr class="hover:bg-neutral-50 transition-colors">
@@ -69,7 +70,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             </a>
                             <form action="{{ route('admin.tv.destroy', $item) }}" method="POST"
-                                onsubmit="return confirm('Hapus item ini?')">
+                                data-confirm="Item ini akan dihapus permanen dan tidak dapat dikembalikan." data-confirm-title="Hapus Item?" data-confirm-ok="Ya, Hapus" data-confirm-variant="danger">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="p-1.5 rounded-lg text-neutral-400 hover:text-red-500 hover:bg-red-50 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -81,6 +82,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
     @else
     <div class="bg-neutral-50 rounded-2xl border border-neutral-200 py-8 text-center text-neutral-400 text-sm">

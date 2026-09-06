@@ -7,7 +7,7 @@
 
 @section('content')
 
-<div class="flex items-center justify-between mb-6">
+<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
     <div>
         <h1 class="text-xl font-bold text-neutral-900">Manajemen Donasi</h1>
         <p class="text-sm text-neutral-500 mt-0.5">Daftar transaksi donasi masuk</p>

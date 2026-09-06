@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Galeri;
 use App\Models\Kategori;
+use App\Traits\OptimizesImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class GaleriController extends Controller
 {
+    use OptimizesImages;
+
     public function index()
     {
         $galeris = Galeri::with('kategori')->orderByDesc('created_at')->paginate(20);
@@ -26,15 +29,17 @@ class GaleriController extends Controller
     {
         $request->validate([
             'judul'       => 'required|string|max:255',
+            'files'       => 'required|array|min:1',
             'files.*'     => 'required|image|mimes:jpg,jpeg,png,webp|max:4096',
             'kategori_id' => 'nullable|exists:kategoris,id',
             'album'       => 'nullable|string|max:255',
         ]);
 
         foreach ($request->file('files', []) as $file) {
+            $savedPath = $this->optimizeImage($file, 'galeri');
             Galeri::create([
                 'judul'       => $request->judul,
-                'file'        => $file->store('galeri', 'public'),
+                'file'        => $savedPath,
                 'kategori_id' => $request->kategori_id,
                 'keterangan'  => $request->keterangan,
                 'album'       => $request->album,
@@ -42,7 +47,7 @@ class GaleriController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.galeri.index')->with('success', 'Foto berhasil diunggah.');
+        return redirect()->route('admin.galeri.index')->with('success', 'Foto berhasil diunggah & dioptimasi.');
     }
 
     public function edit(Galeri $galeri)

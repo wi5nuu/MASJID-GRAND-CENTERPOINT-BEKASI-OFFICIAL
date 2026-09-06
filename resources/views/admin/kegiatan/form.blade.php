@@ -10,7 +10,7 @@
 @section('content')
 
 <div class="max-w-3xl">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <h1 class="text-xl font-bold text-neutral-900">{{ isset($kegiatan) ? 'Edit Kegiatan' : 'Tambah Kegiatan Baru' }}</h1>
         <a href="{{ route('admin.kegiatan.index') }}" class="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-700 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>

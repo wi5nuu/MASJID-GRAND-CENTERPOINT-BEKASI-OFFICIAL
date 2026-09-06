@@ -42,6 +42,14 @@ class ShalatController extends Controller
 
     public function update(Request $request, JadwalShalat $jadwal)
     {
+        $request->validate([
+            'subuh'   => 'nullable|date_format:H:i',
+            'syuruq'  => 'nullable|date_format:H:i',
+            'dzuhur'  => 'nullable|date_format:H:i',
+            'ashar'   => 'nullable|date_format:H:i',
+            'maghrib' => 'nullable|date_format:H:i',
+            'isya'    => 'nullable|date_format:H:i',
+        ]);
         $jadwal->update($request->only('subuh','syuruq','dzuhur','ashar','maghrib','isya'));
         return back()->with('success', 'Jadwal shalat berhasil diperbarui.');
     }

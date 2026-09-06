@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Kegiatan;
 use App\Models\Event;
 use App\Models\Kategori;
+use App\Traits\OptimizesImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class KegiatanController extends Controller
 {
+    use OptimizesImages;
+
     public function index(Request $request)
     {
         $query = Kegiatan::with('kategori')->orderByDesc('tanggal');
@@ -42,7 +45,7 @@ class KegiatanController extends Controller
         ]);
         $v['is_active'] = $request->boolean('is_active', true);
         if ($request->hasFile('thumbnail')) {
-            $v['thumbnail'] = $request->file('thumbnail')->store('kegiatan', 'public');
+            $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'kegiatan');
         }
         Kegiatan::create($v);
         return redirect()->route('admin.kegiatan.index')->with('success', 'Kegiatan berhasil ditambahkan.');
@@ -66,12 +69,13 @@ class KegiatanController extends Controller
             'lokasi'      => 'nullable|string|max:255',
             'narasumber'  => 'nullable|string|max:255',
             'jenis'       => 'required|in:rutin,khusus',
+            'hari_rutin'  => 'nullable|in:senin,selasa,rabu,kamis,jumat,sabtu,ahad',
             'thumbnail'   => 'nullable|image|max:2048',
         ]);
         $v['is_active'] = $request->boolean('is_active', true);
         if ($request->hasFile('thumbnail')) {
             if ($kegiatan->thumbnail) Storage::disk('public')->delete($kegiatan->thumbnail);
-            $v['thumbnail'] = $request->file('thumbnail')->store('kegiatan', 'public');
+            $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'kegiatan');
         }
         $kegiatan->update($v);
         return redirect()->route('admin.kegiatan.index')->with('success', 'Kegiatan berhasil diperbarui.');

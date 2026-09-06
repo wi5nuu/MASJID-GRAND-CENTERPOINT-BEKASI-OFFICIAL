@@ -16,7 +16,7 @@
             <span class="text-white">{{ Str::limit($event->judul, 40) }}</span>
         </div>
         <span class="inline-block bg-gold-500 text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">Event Khusus</span>
-        <h1 class="text-2xl sm:text-3xl font-bold text-white max-w-3xl">{{ $event->judul }}</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold max-w-3xl" style="color: #ffffff;">{{ $event->judul }}</h1>
     </div>
 </section>
 

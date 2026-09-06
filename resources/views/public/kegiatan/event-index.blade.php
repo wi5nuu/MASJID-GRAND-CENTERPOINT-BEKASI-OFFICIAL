@@ -4,7 +4,7 @@
 <section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
     <div class="absolute inset-0 pattern-islamic opacity-20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-3">Event Khusus</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Event Khusus</h1>
         <p class="text-primary-200 text-sm">Program dan event spesial dari Masjid Grand Centerpoint Bekasi.</p>
     </div>
 </section>
@@ -38,7 +38,7 @@
                 </div>
             </article>
             @empty
-            <div class="col-span-3 text-center py-16">
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-16">
                 <p class="text-neutral-500 text-sm">Belum ada event khusus.</p>
             </div>
             @endforelse

@@ -72,6 +72,8 @@
         </div>
     </div>
 
+    @include('components.admin.confirm-modal')
+
     @stack('scripts')
 </body>
 </html>

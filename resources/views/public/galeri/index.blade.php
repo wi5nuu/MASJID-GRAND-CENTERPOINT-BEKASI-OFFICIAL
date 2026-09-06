@@ -1,6 +1,8 @@
 @extends('layouts.public')
 
-@section('title', 'Galeri Foto — Masjid Grand Centerpoint Bekasi')
+@section('title', 'Galeri Foto — Dokumentasi Kegiatan Masjid Grand Centerpoint Bekasi')
+@section('meta_description', 'Galeri foto dokumentasi kegiatan dan momen Masjid Grand Centerpoint Bekasi — kajian, santunan, bakti sosial, kurban, dan kegiatan rutin jamaah.')
+@section('meta_keywords', 'galeri masjid bekasi, foto kegiatan masjid grand centerpoint, dokumentasi masjid bekasi, album foto masjid bekasi')
 
 @section('content')
 
@@ -8,40 +10,77 @@
     <div class="absolute inset-0 pattern-islamic opacity-20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <span class="inline-block text-xs font-semibold text-primary-200 uppercase tracking-widest mb-3">Media</span>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-3">Galeri Foto</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Galeri Foto</h1>
         <p class="text-primary-200 text-sm">Dokumentasi kegiatan dan momen di Masjid Grand Centerpoint Bekasi.</p>
     </div>
 </section>
 
-<section class="py-12 bg-white" x-data="lightbox()">
+@php
+    $allImages = $galeris->map(fn($g) => ['src' => Storage::url($g->file), 'caption' => $g->judul])->values()->toArray();
+@endphp
+
+<section class="py-12 bg-white" x-data="{
+    open: false,
+    current: '',
+    currentCaption: '',
+    images: {{ Js::from($allImages) }},
+    currentIndex: 0,
+    show(src, caption, index) {
+        this.current = src;
+        this.currentCaption = caption;
+        this.currentIndex = index;
+        this.open = true;
+        document.body.style.overflow = 'hidden';
+    },
+    close() {
+        this.open = false;
+        document.body.style.overflow = '';
+    },
+    prev() {
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            this.current = this.images[this.currentIndex].src;
+            this.currentCaption = this.images[this.currentIndex].caption;
+        }
+    },
+    next() {
+        if (this.currentIndex < this.images.length - 1) {
+            this.currentIndex++;
+            this.current = this.images[this.currentIndex].src;
+            this.currentCaption = this.images[this.currentIndex].caption;
+        }
+    }
+}">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- Album Filter --}}
         @if($albums->isNotEmpty())
-        <div class="flex flex-wrap gap-2 mb-8">
-            <a href="{{ route('galeri.index') }}" class="px-4 py-1.5 rounded-full text-sm font-medium {{ !request('album') ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-600 hover:bg-primary-50 hover:text-primary-700' }} transition-colors">Semua</a>
+        <div class="flex gap-2 mb-8 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
+            <a href="{{ route('galeri.index') }}" class="px-4 py-1.5 rounded-full text-sm font-medium shrink-0 {{ !request('album') ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-600 hover:bg-primary-50 hover:text-primary-700' }} transition-colors">Semua</a>
             @foreach($albums as $album)
-            <a href="{{ route('galeri.index', ['album' => $album]) }}" class="px-4 py-1.5 rounded-full text-sm font-medium {{ request('album') == $album ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-600 hover:bg-primary-50 hover:text-primary-700' }} transition-colors">{{ $album }}</a>
+            <a href="{{ route('galeri.index', ['album' => $album]) }}" class="px-4 py-1.5 rounded-full text-sm font-medium shrink-0 {{ request('album') == $album ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-600 hover:bg-primary-50 hover:text-primary-700' }} transition-colors">{{ $album }}</a>
             @endforeach
         </div>
         @endif
 
         {{-- Gallery Grid --}}
-        @php
-            $allImages = $galeris->map(fn($g) => ['src' => Storage::url($g->file), 'caption' => $g->judul])->values()->toArray();
-        @endphp
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             @forelse($galeris as $i => $foto)
             <div class="aspect-square rounded-xl overflow-hidden bg-neutral-100 cursor-pointer group relative"
-                @click="show('{{ Storage::url($foto->file) }}', '{{ addslashes($foto->judul) }}', {{ json_encode($allImages) }}, {{ $i }})">
+                @click="show('{{ Storage::url($foto->file) }}', @js($foto->judul), {{ $i }})">
                 <img src="{{ Storage::url($foto->file) }}" alt="{{ $foto->judul }}"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                {{-- Shadow biru permanen dari bawah --}}
+                <div class="absolute bottom-0 left-0 right-0 h-24 flex items-end p-3" style="background: linear-gradient(to top, rgba(29, 78, 216, 0.75) 0%, transparent 100%); z-index: 10;">
+                    <p class="text-white text-xs font-medium line-clamp-2">{{ $foto->judul }}</p>
+                </div>
+                {{-- Overlay hover + ikon zoom --}}
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center" style="z-index: 11;">
                     <svg class="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/></svg>
                 </div>
             </div>
             @empty
-            <div class="col-span-4 text-center py-16">
+            <div class="col-span-2 sm:col-span-3 lg:col-span-4 text-center py-16">
                 <svg class="w-12 h-12 text-neutral-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 <p class="text-neutral-500 text-sm">Belum ada foto.</p>
             </div>

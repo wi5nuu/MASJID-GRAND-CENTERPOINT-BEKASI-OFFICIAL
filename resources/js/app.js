@@ -52,11 +52,20 @@ Alpine.data('prayerCountdown', () => ({
     }
 }));
 
-// Mobile menu
+// Mobile menu — state `open` (template memakai `open`; alias `isOpen` untuk kompatibilitas)
 Alpine.data('mobileMenu', () => ({
     open: false,
+    get isOpen() { return this.open; },
+    set isOpen(v) { this.open = v; },
     toggle() { this.open = !this.open; },
-    close() { this.open = false; }
+    close() { this.open = false; },
+    initNavbar() {
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('main-navbar');
+            if (!navbar) return;
+            navbar.classList.toggle('navbar-scrolled', window.scrollY > 40);
+        }, { passive: true });
+    }
 }));
 
 // Gallery lightbox
@@ -196,10 +205,21 @@ Alpine.data('clock', () => ({
     }
 }));
 
-Alpine.start();
+// Alpine.start() dibungkus try/catch agar satu komponen yang error tidak
+// mematikan seluruh inisialisasi di bawahnya (termasuk scroll-reveal).
+try {
+    Alpine.start();
+} catch (e) {
+    console.error('[app] Alpine gagal start:', e);
+}
 
-// Navbar scroll effect
-document.addEventListener('DOMContentLoaded', () => {
+// Scroll reveal + efek navbar — dijalankan segera (modul deferred = DOM siap)
+// atau saat DOMContentLoaded bila dokumen masih loading.
+initScrollReveal();
+
+function initScrollReveal() {
+    if (window.__revealReady) return;
+
     const navbar = document.getElementById('main-navbar');
     if (navbar) {
         window.addEventListener('scroll', () => {
@@ -209,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 navbar.classList.remove('shadow-md');
             }
-        });
+        }, { passive: true });
     }
 
     // Auto-hide flash messages
@@ -223,15 +243,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
-    // Animate on scroll
-    const observer = new IntersectionObserver((entries) => {
+    // Scroll reveal animations — smooth seperti PPT
+    const targets = document.querySelectorAll('[data-animate]');
+    window.__revealReady = true;
+    if (!targets.length) return;
+
+    // Fallback: tanpa IntersectionObserver, tampilkan semua langsung.
+    if (!('IntersectionObserver' in window)) {
+        targets.forEach(el => el.classList.add('animate-in'));
+        return;
+    }
+
+    const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-                observer.unobserve(entry.target);
+                const el = entry.target;
+                const delay = el.dataset.delay || 0;
+                setTimeout(() => {
+                    el.classList.add('animate-in');
+                }, parseInt(delay));
+                revealObserver.unobserve(el);
             }
         });
-    }, { threshold: 0.1 });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -60px 0px'
+    });
 
-    document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
-});
+    targets.forEach(el => {
+        revealObserver.observe(el);
+    });
+}
+
+// Jaga-jaga: bila modul tereksekusi sebelum DOM selesai diparsing
+// (mis. di-bundle tanpa defer), daftarkan juga via DOMContentLoaded.
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollReveal);
+}

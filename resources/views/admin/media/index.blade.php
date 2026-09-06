@@ -23,8 +23,8 @@
 
     {{-- Flash --}}
     @if(session('success'))
-    <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
-        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <div class="bg-primary-50 border border-primary-200 text-primary-800 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+        <svg class="w-4 h-4 shrink-0 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         {{ session('success') }}
     </div>
     @endif
@@ -85,7 +85,7 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                     </button>
                     <form action="{{ route('admin.media.destroy', $file) }}" method="POST"
-                        onsubmit="return confirm('Hapus file ini?')">
+                        data-confirm="File ini akan dihapus permanen dan tidak dapat dikembalikan." data-confirm-title="Hapus File?" data-confirm-ok="Ya, Hapus" data-confirm-variant="danger">
                         @csrf @method('DELETE')
                         <button type="submit"
                             class="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-neutral-700 hover:text-red-600 transition-colors" title="Hapus">
@@ -129,16 +129,31 @@
     <div x-show="showUpload" x-cloak
         class="fixed inset-0 z-50 flex items-center justify-center p-4"
         @keydown.escape.window="showUpload = false">
-        <div class="absolute inset-0 bg-black/50" @click="showUpload = false"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 z-10">
-            <div class="flex items-center justify-between mb-5">
-                <h2 class="font-bold text-neutral-900">Unggah File</h2>
-                <button @click="showUpload = false" class="p-1 rounded-lg text-neutral-400 hover:bg-neutral-100 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+        <div class="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" @click="showUpload = false"
+            x-show="showUpload" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 overflow-hidden"
+            x-show="showUpload" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-3" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-3">
+            <div class="relative bg-gradient-to-r from-primary-700 to-primary-500 px-6 py-5 overflow-hidden">
+                <div class="absolute inset-0 pattern-islamic opacity-20"></div>
+                <div class="relative flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-white">Unggah File</h2>
+                            <p class="text-xs text-white/70 mt-0.5">Semua tipe file · maks. 10MB</p>
+                        </div>
+                    </div>
+                    <button @click="showUpload = false" class="p-1.5 rounded-lg text-white/80 hover:bg-white/20 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
             </div>
 
-            <form action="{{ route('admin.media.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.media.store') }}" method="POST" enctype="multipart/form-data" class="p-6">
                 @csrf
                 <div class="space-y-4">
                     {{-- Drop zone --}}

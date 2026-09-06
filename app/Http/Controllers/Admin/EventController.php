@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Traits\OptimizesImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
+    use OptimizesImages;
+
     public function index() { return view('admin.event.index', ['events' => Event::orderByDesc('tanggal_mulai')->paginate(15)]); }
     public function create() { return view('admin.event.form'); }
 
@@ -19,7 +22,7 @@ class EventController extends Controller
         $v['slug'] = Str::slug($request->judul);
         $v['is_active'] = $request->boolean('is_active', true);
         $v['is_featured'] = $request->boolean('is_featured');
-        if ($request->hasFile('thumbnail')) $v['thumbnail'] = $request->file('thumbnail')->store('event', 'public');
+        if ($request->hasFile('thumbnail')) $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'event');
         Event::create(array_merge($v, $request->only('tanggal_selesai','waktu_mulai','lokasi','kuota','konten')));
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan.');
     }
@@ -32,7 +35,7 @@ class EventController extends Controller
         $v['is_active'] = $request->boolean('is_active', true);
         if ($request->hasFile('thumbnail')) {
             if ($event->thumbnail) Storage::disk('public')->delete($event->thumbnail);
-            $v['thumbnail'] = $request->file('thumbnail')->store('event', 'public');
+            $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'event');
         }
         $event->update(array_merge($v, $request->only('tanggal_selesai','waktu_mulai','lokasi','kuota','konten','deskripsi')));
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui.');

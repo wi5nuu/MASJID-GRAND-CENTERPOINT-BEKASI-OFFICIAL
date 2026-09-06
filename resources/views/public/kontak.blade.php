@@ -1,21 +1,36 @@
 @extends('layouts.public')
 
-@section('title', 'Kontak — Masjid Grand Centerpoint Bekasi')
+@section('title', 'Kontak & Lokasi — Masjid Grand Centerpoint Bekasi')
+@section('meta_description', 'Hubungi Masjid Grand Centerpoint Bekasi. Alamat: GRAND Centerpoint Tower C & D, Jalan Ahmad Yani Sentra Niaga Kalimalang, Bekasi, Jawa Barat. Telepon, email, dan peta lokasi tersedia.')
+@section('meta_keywords', 'kontak masjid grand centerpoint, alamat masjid bekasi, lokasi masjid grand centerpoint, telepon masjid bekasi, peta masjid bekasi')
+
+@push('head')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@@type": "ListItem", "position": 1, "name": "Beranda", "item": "{{ url('/') }}"},
+        {"@@type": "ListItem", "position": 2, "name": "Kontak & Lokasi", "item": "{{ route('kontak') }}"}
+    ]
+}
+</script>
+@endpush
 
 @section('content')
 
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-16">
+<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-12 sm:py-16">
     <div class="absolute inset-0 pattern-islamic opacity-20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <span class="inline-block text-xs font-semibold text-primary-200 uppercase tracking-widest mb-3">Hubungi Kami</span>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-4">Kontak & Lokasi</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-4" style="color: #ffffff;">Kontak & Lokasi</h1>
         <p class="text-primary-200 text-sm max-w-lg mx-auto">Kami dengan senang hati menerima pertanyaan dan masukan dari Anda.</p>
     </div>
 </section>
 
-<section class="py-14 bg-white">
+<section class="py-10 sm:py-14 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 
             {{-- Info Kontak --}}
             <div>
@@ -27,7 +42,7 @@
                         </div>
                         <div>
                             <p class="font-semibold text-neutral-900 text-sm mb-1">Alamat</p>
-                            <p class="text-neutral-600 text-sm">Grand Centerpoint, Jl. Ahmad Yani<br>Bekasi, Jawa Barat 17143</p>
+                            <p class="text-neutral-600 text-sm">GRAND Centerpoint Tower C &amp; D<br>Jalan Ahmad Yani Sentra Niaga Kalimalang A3.2<br>Kayuringinjaya, Jawa Barat</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">

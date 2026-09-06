@@ -7,7 +7,7 @@
 
 @section('content')
 
-<div class="flex items-center justify-between mb-6">
+<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
     <div>
         <h1 class="text-xl font-bold text-neutral-900">Pesan Masuk</h1>
         <p class="text-sm text-neutral-500 mt-0.5">Pesan dari form kontak website</p>
@@ -56,7 +56,7 @@
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </a>
                             <form action="{{ route('admin.kontak.destroy', $kontak) }}" method="POST"
-                                onsubmit="return confirm('Hapus pesan ini?')">
+                                data-confirm="Pesan ini akan dihapus permanen dan tidak dapat dikembalikan." data-confirm-title="Hapus Pesan?" data-confirm-ok="Ya, Hapus" data-confirm-variant="danger">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="p-1.5 rounded-lg text-neutral-400 hover:text-red-500 hover:bg-red-50 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>

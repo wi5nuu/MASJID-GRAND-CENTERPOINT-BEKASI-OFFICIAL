@@ -23,7 +23,7 @@
                 </svg>
             </div>
             <p class="font-arabic text-3xl text-gold-300 mb-2" dir="rtl">بِسْمِ اللَّهِ</p>
-            <h1 class="text-3xl font-bold text-white mb-3">Masjid Grand<br>Centerpoint Bekasi</h1>
+            <h1 class="text-3xl font-bold text-white mb-3" style="color: #ffffff !important;">Masjid Grand<br>Centerpoint Bekasi</h1>
             <p class="text-primary-200 text-sm max-w-xs mx-auto leading-relaxed">
                 Panel administrasi untuk pengelolaan konten, kegiatan, dan informasi masjid.
             </p>
@@ -43,12 +43,9 @@
 
             {{-- Mobile Logo --}}
             <div class="flex flex-col items-center mb-8 lg:hidden">
-                <div class="w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center mb-3">
-                    <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L8 6H4v2h1v12h14V8h1V6h-4L12 2zm0 2.5L14.5 7H9.5L12 4.5zM6 8h12v11H6V8zm3 2v7h2v-7H9zm4 0v7h2v-7h-2z"/>
-                    </svg>
-                </div>
-                <h1 class="text-lg font-bold text-neutral-900">Masjid Grand Centerpoint</h1>
+                <img src="{{ asset('logo_apartemen_grand_centerpoint.png') }}"
+                     alt="Logo Masjid Grand Centerpoint Bekasi"
+                     class="h-12 w-auto object-contain mb-3">
                 <p class="text-sm text-neutral-500">Panel Administrasi</p>
             </div>
 
@@ -71,11 +68,17 @@
             <form method="POST" action="{{ route('admin.login.post') }}" class="space-y-5">
                 @csrf
 
+                {{-- Honeypot: field ini harus kosong, bot biasanya mengisi semua field --}}
+                <div style="display:none !important; visibility:hidden; position:absolute; left:-9999px;" aria-hidden="true">
+                    <input type="text" name="website" value="" tabindex="-1" autocomplete="off">
+                    <input type="hidden" name="hp_time" value="{{ $hpTime ?? base64_encode((string)time()) }}">
+                </div>
+
                 <div>
                     <label for="email" class="block text-sm font-medium text-neutral-700 mb-1.5">Email</label>
                     <input type="email" id="email" name="email" value="{{ old('email') }}" required autofocus
                         class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 bg-white text-neutral-900 text-sm placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                        placeholder="admin@masjidgcp.com">
+                        placeholder="naman@masjidgcp.com">
                 </div>
 
                 <div>

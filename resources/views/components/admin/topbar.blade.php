@@ -32,39 +32,34 @@
         <div class="relative" x-data="notifications()">
             <button @click="toggle()" class="relative p-2 rounded-lg text-neutral-500 hover:bg-neutral-100 transition-colors" aria-label="Notifikasi">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                <span id="notif-dot" class="{{ ($adminNotif['counts']['total'] ?? 0) > 0 ? '' : 'hidden ' }}absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             <div x-show="open" @click.outside="open=false" x-cloak
                 x-transition:enter="transition ease-out duration-100"
                 x-transition:enter-start="opacity-0 scale-95"
                 x-transition:enter-end="opacity-100 scale-100"
-                class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-neutral-200 z-50">
+                class="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] bg-white rounded-xl shadow-lg border border-neutral-200 z-50">
                 <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-100">
-                    <h3 class="text-sm font-semibold text-neutral-900">Notifikasi</h3>
-                    <span class="text-xs text-primary-600 font-medium cursor-pointer hover:underline">Tandai semua dibaca</span>
+                    <h3 class="text-sm font-semibold text-neutral-900">Notifikasi <span id="notif-total" class="text-xs font-medium text-neutral-400">({{ $adminNotif['counts']['total'] ?? 0 }})</span></h3>
+                    <button id="notif-read-all" type="button" class="text-xs text-primary-600 font-medium cursor-pointer hover:underline">Tandai semua dibaca</button>
                 </div>
-                <div class="py-2 max-h-64 overflow-y-auto">
-                    <div class="px-4 py-3 hover:bg-neutral-50 transition-colors">
+                <div id="notif-items" class="py-2 max-h-72 overflow-y-auto">
+                    @forelse($adminNotif['items'] ?? [] as $item)
+                    <a href="{{ $item['url'] }}" class="block px-4 py-3 hover:bg-neutral-50 transition-colors">
                         <div class="flex items-start gap-3">
-                            <div class="w-2 h-2 rounded-full bg-primary-500 mt-1.5 shrink-0"></div>
-                            <div>
-                                <p class="text-xs text-neutral-700">Donasi baru masuk dari Hamba Allah</p>
-                                <p class="text-xs text-neutral-400 mt-0.5">2 menit lalu</p>
+                            <div class="w-2 h-2 rounded-full mt-1.5 shrink-0 {{ $item['color'] === 'amber' ? 'bg-amber-500' : ($item['color'] === 'blue' ? 'bg-blue-500' : 'bg-green-500') }}"></div>
+                            <div class="min-w-0">
+                                <p class="text-xs text-neutral-700 leading-relaxed">{{ $item['text'] }}</p>
+                                <p class="text-xs text-neutral-400 mt-0.5">{{ $item['time'] }}</p>
                             </div>
                         </div>
+                    </a>
+                    @empty
+                    <div class="px-4 py-8 text-center" data-notif-empty>
+                        <svg class="w-8 h-8 text-neutral-200 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <p class="text-xs text-neutral-400">Tidak ada notifikasi baru</p>
                     </div>
-                    <div class="px-4 py-3 hover:bg-neutral-50 transition-colors">
-                        <div class="flex items-start gap-3">
-                            <div class="w-2 h-2 rounded-full bg-primary-500 mt-1.5 shrink-0"></div>
-                            <div>
-                                <p class="text-xs text-neutral-700">Komentar baru pada artikel berita</p>
-                                <p class="text-xs text-neutral-400 mt-0.5">1 jam lalu</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="px-4 py-2 border-t border-neutral-100">
-                    <a href="#" class="block text-center text-xs text-primary-600 hover:underline py-1">Lihat semua notifikasi</a>
+                    @endforelse
                 </div>
             </div>
         </div>
@@ -107,3 +102,90 @@
         </div>
     </div>
 </header>
+
+@push('scripts')
+<script>
+(function () {
+    var FEED_URL = @json(route('admin.notifications.feed'));
+    var READ_ALL_URL = @json(route('admin.notifications.read-all'));
+    var CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    var POLL_MS = 30000;
+    var timer = null;
+
+    var DOT_COLORS = { amber: 'bg-amber-500', blue: 'bg-blue-500', green: 'bg-green-500' };
+
+    function esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c];
+        });
+    }
+
+    function setBadge(key, n) {
+        document.querySelectorAll('[data-notif-badge="' + key + '"]').forEach(function (el) {
+            el.textContent = n;
+            el.classList.toggle('hidden', !(n > 0));
+        });
+    }
+
+    function render(data) {
+        var counts = data.counts || { users: 0, kontak: 0, donasi: 0, total: 0 };
+        var items = data.items || [];
+
+        var dot = document.getElementById('notif-dot');
+        if (dot) dot.classList.toggle('hidden', !(counts.total > 0));
+
+        var total = document.getElementById('notif-total');
+        if (total) total.textContent = '(' + counts.total + ')';
+
+        setBadge('users', counts.users);
+        setBadge('kontak', counts.kontak);
+        setBadge('donasi', counts.donasi);
+
+        var box = document.getElementById('notif-items');
+        if (box) {
+            if (!items.length) {
+                box.innerHTML = '<div class="px-4 py-8 text-center"><svg class="w-8 h-8 text-neutral-200 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p class="text-xs text-neutral-400">Tidak ada notifikasi baru</p></div>';
+            } else {
+                box.innerHTML = items.map(function (it) {
+                    var dotCls = DOT_COLORS[it.color] || 'bg-primary-500';
+                    return '<a href="' + esc(it.url) + '" class="block px-4 py-3 hover:bg-neutral-50 transition-colors">'
+                        + '<div class="flex items-start gap-3">'
+                        + '<div class="w-2 h-2 rounded-full mt-1.5 shrink-0 ' + dotCls + '"></div>'
+                        + '<div class="min-w-0"><p class="text-xs text-neutral-700 leading-relaxed">' + esc(it.text) + '</p>'
+                        + '<p class="text-xs text-neutral-400 mt-0.5">' + esc(it.time) + '</p></div>'
+                        + '</div></a>';
+                }).join('');
+            }
+        }
+    }
+
+    async function poll() {
+        if (document.hidden) return;
+        try {
+            var res = await fetch(FEED_URL, { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' });
+            if (res.status === 401 || res.status === 403 || res.status === 419) { stop(); return; }
+            if (!res.ok) return;
+            render(await res.json());
+        } catch (e) { /* jaringan terputus — coba lagi periodenya */ }
+    }
+
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    document.getElementById('notif-read-all')?.addEventListener('click', async function () {
+        try {
+            var res = await fetch(READ_ALL_URL, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF },
+                credentials: 'same-origin'
+            });
+            if (!res.ok) return;
+            render(await res.json());
+        } catch (e) { /* abaikan */ }
+    });
+
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) poll(); });
+
+    timer = setInterval(poll, POLL_MS);
+})();
+</script>
+@endpush

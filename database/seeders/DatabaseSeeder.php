@@ -13,23 +13,25 @@ use App\Models\Pengurus;
 use App\Models\TvDisplay;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Database\Seeders\KegiatanSeeder;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
         // ─── Roles ──────────────────────────────────────────────────────────────
-        DB::table('roles')->insert([
+        DB::table('roles')->insertOrIgnore([
             ['id' => 1, 'name' => 'superadmin', 'label' => 'Super Admin', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'name' => 'admin',      'label' => 'Admin',       'created_at' => now(), 'updated_at' => now()],
             ['id' => 3, 'name' => 'editor',     'label' => 'Editor',      'created_at' => now(), 'updated_at' => now()],
+            ['id' => 4, 'name' => 'jamaah',     'label' => 'Jamaah',      'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // ─── Default Admin User ──────────────────────────────────────────────────
         User::create([
-            'name'      => 'Super Admin',
-            'email'     => 'admin@masjidgcp.com',
-            'password'  => Hash::make('password'),
+            'name'      => 'Wisnu Ashar',
+            'email'     => 'wisnu.ashar@masjidgcp.com',
+            'password'  => Hash::make('grandcenterpoin01'),
             'role_id'   => 1,
             'is_active' => true,
         ]);
@@ -159,5 +161,8 @@ class DatabaseSeeder extends Seeder
             ['tipe' => 'pengumuman', 'judul' => 'Kajian Rutin', 'konten' => 'Kajian Tafsir Al-Quran setiap Ahad pagi pukul 08.00 WIB bersama Ustadz Ahmad Yusuf, Lc.', 'durasi' => 10, 'urutan' => 2, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
             ['tipe' => 'pengumuman', 'judul' => 'Donasi', 'konten' => 'Donasi operasional masjid dapat diserahkan ke sekretariat atau melalui transfer ke rekening masjid.', 'durasi' => 10, 'urutan' => 3, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
         ]);
+
+        // ─── Kegiatan ─────────────────────────────────────────────────────────────
+        $this->call(KegiatanSeeder::class);
     }
 }

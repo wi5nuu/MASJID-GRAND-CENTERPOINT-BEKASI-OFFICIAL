@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Video;
 use App\Models\Kategori;
+use App\Traits\OptimizesImages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
+    use OptimizesImages;
+
     public function index()
     {
         $videos = Video::with('kategori')->orderByDesc('created_at')->paginate(15);
@@ -38,7 +41,7 @@ class VideoController extends Controller
         $v['is_featured'] = $request->boolean('is_featured');
         $v['published_at'] = now();
         if ($request->hasFile('thumbnail')) {
-            $v['thumbnail'] = $request->file('thumbnail')->store('video', 'public');
+            $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'video');
         }
         Video::create($v);
         return redirect()->route('admin.video.index')->with('success', 'Video berhasil ditambahkan.');
@@ -63,7 +66,7 @@ class VideoController extends Controller
         $v['is_featured'] = $request->boolean('is_featured');
         if ($request->hasFile('thumbnail')) {
             if ($video->thumbnail) Storage::disk('public')->delete($video->thumbnail);
-            $v['thumbnail'] = $request->file('thumbnail')->store('video', 'public');
+            $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'video');
         }
         $video->update($v);
         return redirect()->route('admin.video.index')->with('success', 'Video berhasil diperbarui.');

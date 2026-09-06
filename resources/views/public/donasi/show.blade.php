@@ -3,10 +3,10 @@
 @section('content')
 <section class="py-12 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex items-center gap-2 text-xs text-neutral-400 mb-6">
-            <a href="{{ route('donasi.index') }}" class="hover:text-primary-600">Donasi</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <span class="text-neutral-600">{{ $program->nama }}</span>
+        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-400 mb-6">
+            <a href="{{ route('donasi.index') }}" class="hover:text-primary-600 shrink-0">Donasi</a>
+            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <span class="text-neutral-600 min-w-0 truncate">{{ $program->nama }}</span>
         </nav>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
@@ -24,9 +24,9 @@
                     <div class="h-3 bg-primary-100 rounded-full overflow-hidden mb-2">
                         <div class="h-full bg-primary-600 rounded-full" style="width:{{ min(100,$program->persentase) }}%"></div>
                     </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="font-semibold text-primary-700">Rp {{ number_format($program->terkumpul,0,',','.') }}</span>
-                        <span class="text-neutral-500">Target: Rp {{ number_format($program->target,0,',','.') }}</span>
+                    <div class="flex flex-wrap justify-between gap-x-3 gap-y-1 text-xs sm:text-sm">
+                        <span class="font-semibold text-primary-700 break-words">Rp {{ number_format($program->terkumpul,0,',','.') }}</span>
+                        <span class="text-neutral-500 text-right break-words">Target: Rp {{ number_format($program->target,0,',','.') }}</span>
                     </div>
                 </div>
                 @endif
@@ -36,8 +36,8 @@
                     @foreach($recentDonasi->take(5) as $d)
                     <div class="flex items-center gap-3 text-sm">
                         <div class="w-7 h-7 rounded-full bg-primary-100 flex items-center justify-center shrink-0"><span class="text-primary-700 text-xs font-bold">{{ strtoupper(substr($d->nama,0,1)) }}</span></div>
-                        <span class="text-neutral-700">{{ $d->nama }}</span>
-                        <span class="ml-auto font-semibold text-primary-700 text-xs">Rp {{ number_format($d->jumlah,0,',','.') }}</span>
+                        <span class="text-neutral-700 truncate min-w-0">{{ $d->nama }}</span>
+                        <span class="ml-auto font-semibold text-primary-700 text-xs shrink-0">Rp {{ number_format($d->jumlah,0,',','.') }}</span>
                     </div>
                     @endforeach
                 </div>

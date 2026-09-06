@@ -31,8 +31,8 @@
 
     {{-- Flash --}}
     @if(session('success'))
-    <div class="bg-green-50 border border-green-200 text-green-700 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
-        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    <div class="bg-primary-50 border border-primary-200 text-primary-800 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+        <svg class="w-4 h-4 shrink-0 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
         {{ session('success') }}
     </div>
     @endif
@@ -116,18 +116,30 @@
 
     {{-- ── Edit Modal ── --}}
     <div x-show="showEdit" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" @keydown.escape.window="showEdit = false">
-        <div class="absolute inset-0 bg-black/50" @click="showEdit = false"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 z-10">
-            <div class="flex items-center justify-between mb-5">
-                <div>
-                    <h2 class="font-bold text-neutral-900">Edit Jadwal Shalat</h2>
-                    <p class="text-xs text-neutral-500 mt-0.5" x-text="editData.tanggal"></p>
+        <div class="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" @click="showEdit = false"
+            x-show="showEdit" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg z-10 overflow-hidden"
+            x-show="showEdit" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-3" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-3">
+            <div class="relative bg-gradient-to-r from-emerald-700 to-emerald-500 px-6 py-5 overflow-hidden">
+                <div class="absolute inset-0 pattern-islamic opacity-20"></div>
+                <div class="relative flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-white">Edit Jadwal Shalat</h2>
+                            <p class="text-xs text-white/70 mt-0.5" x-text="editData.tanggal"></p>
+                        </div>
+                    </div>
+                    <button @click="showEdit = false" class="p-1.5 rounded-lg text-white/80 hover:bg-white/20 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
-                <button @click="showEdit = false" class="p-1 rounded-lg text-neutral-400 hover:bg-neutral-100">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
             </div>
-            <form :action="`/admin/shalat/${editData.id}`" method="POST">
+            <form :action="`/admin/shalat/${editData.id}`" method="POST" class="p-6">
                 @csrf @method('PUT')
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
                     @foreach(['subuh','syuruq','dzuhur','ashar','maghrib','isya'] as $w)
@@ -153,15 +165,30 @@
 
     {{-- ── Tambah Modal ── --}}
     <div x-show="showAdd" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" @keydown.escape.window="showAdd = false">
-        <div class="absolute inset-0 bg-black/50" @click="showAdd = false"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 z-10">
-            <div class="flex items-center justify-between mb-5">
-                <h2 class="font-bold text-neutral-900">Tambah Jadwal Shalat</h2>
-                <button @click="showAdd = false" class="p-1 rounded-lg text-neutral-400 hover:bg-neutral-100">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
+        <div class="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" @click="showAdd = false"
+            x-show="showAdd" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg z-10 overflow-hidden"
+            x-show="showAdd" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-3" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-3">
+            <div class="relative bg-gradient-to-r from-primary-700 to-primary-500 px-6 py-5 overflow-hidden">
+                <div class="absolute inset-0 pattern-islamic opacity-20"></div>
+                <div class="relative flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-white">Tambah Jadwal Shalat</h2>
+                            <p class="text-xs text-white/70 mt-0.5">Isi jadwal untuk tanggal baru</p>
+                        </div>
+                    </div>
+                    <button @click="showAdd = false" class="p-1.5 rounded-lg text-white/80 hover:bg-white/20 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
             </div>
-            <form action="{{ route('admin.shalat.store') }}" method="POST">
+            <form action="{{ route('admin.shalat.store') }}" method="POST" class="p-6">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-xs font-medium text-neutral-700 mb-1.5">Tanggal <span class="text-red-500">*</span></label>
@@ -191,18 +218,30 @@
     </div>
     {{-- ── Fetch API Modal ── --}}
     <div x-show="showFetch" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" @keydown.escape.window="showFetch = false">
-        <div class="absolute inset-0 bg-black/50" @click="showFetch = false"></div>
-        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 z-10">
-            <div class="flex items-center justify-between mb-5">
-                <div>
-                    <h2 class="font-bold text-neutral-900">Impor dari API</h2>
-                    <p class="text-xs text-neutral-500 mt-0.5">Aladhan API · Kota Bekasi</p>
+        <div class="absolute inset-0 bg-neutral-900/60 backdrop-blur-sm" @click="showFetch = false"
+            x-show="showFetch" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm z-10 overflow-hidden"
+            x-show="showFetch" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95 translate-y-3" x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100 translate-y-0" x-transition:leave-end="opacity-0 scale-95 translate-y-3">
+            <div class="relative bg-gradient-to-r from-sky-700 to-sky-500 px-6 py-5 overflow-hidden">
+                <div class="absolute inset-0 pattern-islamic opacity-20"></div>
+                <div class="relative flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-white">Impor dari API</h2>
+                            <p class="text-xs text-white/70 mt-0.5">Aladhan API · Kota Bekasi</p>
+                        </div>
+                    </div>
+                    <button @click="showFetch = false" class="p-1.5 rounded-lg text-white/80 hover:bg-white/20 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
-                <button @click="showFetch = false" class="p-1 rounded-lg text-neutral-400 hover:bg-neutral-100">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
             </div>
-            <form action="{{ route('admin.shalat.fetch') }}" method="POST">
+            <form action="{{ route('admin.shalat.fetch') }}" method="POST" class="p-6">
                 @csrf
                 <div class="space-y-4 mb-5">
                     <div class="bg-primary-50 rounded-xl px-4 py-3 text-xs text-primary-700">

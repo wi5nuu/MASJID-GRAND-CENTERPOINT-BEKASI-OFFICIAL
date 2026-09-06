@@ -6,15 +6,9 @@
     {{-- Sidebar Header --}}
     <div class="flex items-center justify-between h-16 px-4 border-b border-neutral-200 shrink-0">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center shrink-0">
-                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L8 6H4v2h1v12h14V8h1V6h-4L12 2zm0 2.5L14.5 7H9.5L12 4.5zM6 8h12v11H6V8zm3 2v7h2v-7H9zm4 0v7h2v-7h-2z"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-xs font-bold text-neutral-900 leading-tight">Panel Admin</p>
-                <p class="text-xs text-primary-600 leading-tight">Masjid GCP Bekasi</p>
-            </div>
+            <img src="{{ asset('logo_apartemen_grand_centerpoint.png') }}"
+                 alt="Logo Masjid Grand Centerpoint Bekasi"
+                 class="h-8 w-auto object-contain">
         </a>
         <button @click="toggle()" class="lg:hidden p-1 rounded-lg text-neutral-400 hover:bg-neutral-100 transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -82,6 +76,7 @@
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.donasi*') ? 'bg-primary-50 text-primary-700 border-l-[3px] border-primary-600' : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900' }}">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
             Donasi
+            <span data-notif-badge="donasi" class="{{ ($adminNotif['counts']['donasi'] ?? 0) > 0 ? '' : 'hidden ' }}ml-auto text-xs font-bold text-red-500">{{ $adminNotif['counts']['donasi'] ?? 0 }}</span>
         </a>
 
         {{-- Masjid --}}
@@ -108,10 +103,18 @@
         {{-- Sistem --}}
         <p class="px-3 pt-4 pb-1 text-xs font-semibold text-neutral-400 uppercase tracking-wider">Sistem</p>
 
+        <a href="{{ route('admin.kontak.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.kontak*') ? 'bg-primary-50 text-primary-700 border-l-[3px] border-primary-600' : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900' }}">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Pesan Masuk
+            <span data-notif-badge="kontak" class="{{ ($adminNotif['counts']['kontak'] ?? 0) > 0 ? '' : 'hidden ' }}ml-auto text-xs font-bold text-red-500">{{ $adminNotif['counts']['kontak'] ?? 0 }}</span>
+        </a>
+
         <a href="{{ route('admin.users.index') }}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('admin.users*') ? 'bg-primary-50 text-primary-700 border-l-[3px] border-primary-600' : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900' }}">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             Manajemen User
+            <span data-notif-badge="users" class="{{ ($adminNotif['counts']['users'] ?? 0) > 0 ? '' : 'hidden ' }}ml-auto text-xs font-bold text-red-500">{{ $adminNotif['counts']['users'] ?? 0 }}</span>
         </a>
 
         <a href="{{ route('admin.seo.index') }}"

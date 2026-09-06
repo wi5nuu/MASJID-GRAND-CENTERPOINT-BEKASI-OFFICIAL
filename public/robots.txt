@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /admin/
+Disallow: /login
+Disallow: /password/
+
+Allow: /
+
+Sitemap: https://masjidgrandcenterpoint.id/sitemap.xml
+
+Crawl-delay: 1

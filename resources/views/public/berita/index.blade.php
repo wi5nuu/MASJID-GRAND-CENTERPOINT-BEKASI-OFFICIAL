@@ -8,7 +8,7 @@
     <div class="absolute inset-0 pattern-islamic opacity-20"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <span class="inline-block text-xs font-semibold text-primary-200 uppercase tracking-widest mb-3">Informasi</span>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-3">Berita & Artikel</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Berita & Artikel</h1>
         <p class="text-primary-200 text-sm max-w-lg mx-auto">Informasi terbaru seputar kegiatan dan kajian Masjid Grand Centerpoint Bekasi.</p>
     </div>
 </section>
@@ -17,8 +17,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- Filter & Search --}}
-        <form method="GET" class="flex flex-col sm:flex-row gap-3 mb-8">
-            <div class="relative flex-1">
+        <form method="GET" class="flex flex-wrap items-center gap-3 mb-8">
+            <div class="relative flex-1 min-w-[180px]">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari berita..."
                     class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
@@ -93,7 +93,7 @@
                 </div>
             </article>
             @empty
-            <div class="col-span-3 text-center py-16">
+            <div class="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-16">
                 <svg class="w-12 h-12 text-neutral-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
                 <p class="text-neutral-500 text-sm">Belum ada berita yang diterbitkan.</p>
             </div>
