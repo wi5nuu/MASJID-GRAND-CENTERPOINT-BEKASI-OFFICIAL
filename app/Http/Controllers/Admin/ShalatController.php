@@ -25,11 +25,12 @@ class ShalatController extends Controller
     {
         $request->validate([
             'tanggal' => 'required|date',
-            'subuh'   => 'required',
-            'dzuhur'  => 'required',
-            'ashar'   => 'required',
-            'maghrib' => 'required',
-            'isya'    => 'required',
+            'subuh'   => 'required|date_format:H:i',
+            'syuruq'  => 'nullable|date_format:H:i',
+            'dzuhur'  => 'required|date_format:H:i',
+            'ashar'   => 'required|date_format:H:i',
+            'maghrib' => 'required|date_format:H:i',
+            'isya'    => 'required|date_format:H:i',
         ]);
 
         JadwalShalat::updateOrCreate(
