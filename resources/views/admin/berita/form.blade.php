@@ -345,7 +345,7 @@
                     <div id="thumb-preview" class="{{ isset($berita) && $berita->thumbnail ? 'show' : '' }} mb-3 rounded-xl overflow-hidden relative group">
                         <img id="thumb-img"
                             src="{{ isset($berita) && $berita->thumbnail ? Storage::url($berita->thumbnail) : '' }}"
-                            alt="Thumbnail" class="w-full h-40 object-cover">
+                            alt="Thumbnail" class="w-full h-32 sm:h-40 object-cover">
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span class="text-white text-xs font-medium">Klik area bawah untuk ganti</span>
                         </div>
