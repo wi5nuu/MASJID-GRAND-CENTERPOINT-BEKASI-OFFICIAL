@@ -102,29 +102,29 @@
                     @csrf
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-neutral-700 mb-1.5">Nama Lengkap</label>
-                            <input type="text" name="nama" value="{{ old('nama') }}" required
+                            <label for="nama" class="block text-sm font-medium text-neutral-700 mb-1.5">Nama Lengkap</label>
+                            <input type="text" name="nama" id="nama" value="{{ old('nama') }}" required
                                 class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                                 placeholder="Nama Anda">
                             @error('nama')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-neutral-700 mb-1.5">Nomor HP/WA</label>
-                            <input type="tel" name="telepon" value="{{ old('telepon') }}" inputmode="tel"
+                            <label for="telepon" class="block text-sm font-medium text-neutral-700 mb-1.5">Nomor HP/WA</label>
+                            <input type="tel" name="telepon" id="telepon" value="{{ old('telepon') }}" inputmode="tel"
                                 class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                                 placeholder="08xx-xxxx-xxxx">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-neutral-700 mb-1.5">Email</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required
+                        <label for="email" class="block text-sm font-medium text-neutral-700 mb-1.5">Email</label>
+                        <input type="email" name="email" id="email" value="{{ old('email') }}" required
                             class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                             placeholder="email@anda.com">
                         @error('email')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-neutral-700 mb-1.5">Subjek</label>
-                        <select name="subjek" class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white">
+                        <label for="subjek" class="block text-sm font-medium text-neutral-700 mb-1.5">Subjek</label>
+                        <select name="subjek" id="subjek" class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white">
                             <option value="">Pilih subjek...</option>
                             <option value="Informasi Kegiatan" {{ old('subjek') == 'Informasi Kegiatan' ? 'selected' : '' }}>Informasi Kegiatan</option>
                             <option value="Donasi" {{ old('subjek') == 'Donasi' ? 'selected' : '' }}>Donasi</option>
@@ -134,8 +134,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-neutral-700 mb-1.5">Pesan</label>
-                        <textarea name="pesan" rows="5" required
+                        <label for="pesan" class="block text-sm font-medium text-neutral-700 mb-1.5">Pesan</label>
+                        <textarea name="pesan" id="pesan" rows="5" required
                             class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none"
                             placeholder="Tulis pesan Anda di sini...">{{ old('pesan') }}</textarea>
                         @error('pesan')<p class="text-xs text-red-500 mt-1">{{ $message }}</p>@enderror
