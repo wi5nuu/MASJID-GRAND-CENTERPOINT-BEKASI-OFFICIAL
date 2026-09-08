@@ -493,14 +493,6 @@
 
 @push('scripts')
 <script>
-// FAQ accordion (fallback jika Alpine.js tidak tersedia)
-document.querySelectorAll('.faq-trigger').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const content = btn.nextElementSibling;
-        const isOpen = content.classList.contains('open');
-        document.querySelectorAll('.faq-content').forEach(c => c.classList.remove('open'));
-        if (!isOpen) content.classList.add('open');
-    });
-});
+// FAQ accordion handled by Alpine.js - no vanilla JS needed
 </script>
 @endpush
