@@ -3,15 +3,21 @@
 @section('title', $video->judul.' — Video Masjid Grand Centerpoint Bekasi')
 
 @section('content')
+<section class="page-header">
+    <div class="container-xl relative z-10">
+        <div class="max-w-2xl mx-auto text-center">
+            <nav class="flex items-center justify-center gap-2 text-sm text-white/50">
+                <a href="{{ route('home') }}" class="hover:text-white/80 transition-colors">Beranda</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <a href="{{ route('video.index') }}" class="hover:text-white/80 transition-colors">Video</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-white/80 line-clamp-1">{{ $video->judul }}</span>
+            </nav>
+        </div>
+    </div>
+</section>
 <section class="section-padding bg-white">
     <div class="container-xl">
-        <nav class="flex items-center gap-2 text-xs text-neutral-400 mb-6">
-            <a href="{{ route('home') }}" class="hover:text-primary-600 transition-colors">Beranda</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <a href="{{ route('video.index') }}" class="hover:text-primary-600 transition-colors">Video</a>
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <span class="text-neutral-600 line-clamp-1">{{ $video->judul }}</span>
-        </nav>
 
         <h1 class="text-2xl font-bold text-neutral-900 mb-4">{{ $video->judul }}</h1>
 
