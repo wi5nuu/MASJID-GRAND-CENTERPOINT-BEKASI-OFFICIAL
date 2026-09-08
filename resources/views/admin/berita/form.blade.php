@@ -92,7 +92,7 @@
     }
     .editor-wrapper:focus-within {
         border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 </style>
 @endpush
