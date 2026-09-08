@@ -28,10 +28,13 @@ class DonasiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama'   => 'nullable|string|max:255',
-            'jumlah' => 'required|numeric|min:1000',
-            'metode' => 'required|in:transfer,qris,tunai,lainnya',
-            'status' => 'required|in:pending,confirmed,rejected',
+            'program_id' => 'nullable|exists:donasi_programs,id',
+            'nama'       => 'nullable|string|max:255',
+            'email'      => 'nullable|email|max:255',
+            'telepon'    => 'nullable|string|max:20',
+            'jumlah'     => 'required|numeric|min:1000',
+            'metode'     => 'required|in:transfer,qris,tunai,lainnya',
+            'status'     => 'required|in:pending,confirmed,rejected',
         ]);
         Donasi::create($request->only('program_id','nama','email','telepon','jumlah','metode','status','pesan'));
         return redirect()->route('admin.donasi.index')->with('success', 'Donasi berhasil ditambahkan.');
