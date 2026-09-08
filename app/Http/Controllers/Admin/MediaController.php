@@ -19,7 +19,10 @@ class MediaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['file' => 'required|file|max:10240', 'koleksi' => 'nullable|string|max:100']);
+        $request->validate([
+            'file' => 'required|file|max:10240|mimetypes:image/*,application/pdf,video/*,audio/*,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain',
+            'koleksi' => 'nullable|string|max:100'
+        ]);
         $file = $request->file('file');
         $path = $file->store('media', 'public');
         \App\Models\MediaFile::create([
