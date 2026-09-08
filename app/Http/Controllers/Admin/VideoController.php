@@ -36,7 +36,13 @@ class VideoController extends Controller
             'thumbnail'   => 'nullable|image|max:2048',
             'is_featured' => 'boolean',
         ]);
-        $v['slug'] = Str::slug($request->judul);
+        $slug = Str::slug($request->judul);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Video::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter++;
+        }
+        $v['slug'] = $slug;
         $v['is_active'] = $request->boolean('is_active', true);
         $v['is_featured'] = $request->boolean('is_featured');
         $v['published_at'] = now();
