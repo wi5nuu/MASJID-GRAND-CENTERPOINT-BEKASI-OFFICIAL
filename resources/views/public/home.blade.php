@@ -424,7 +424,7 @@
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             @foreach($latestGaleri->take(8) as $i => $galeri)
-            <a href="{{ route('galeri.index') }}" class="group relative aspect-square overflow-hidden rounded-xl bg-neutral-200" data-animate="scale" data-delay="{{ ($i % 4) * 100 }}"
+            <a href="{{ route('galeri.index') }}#galeri-{{ $galeri->id }}" class="group relative aspect-square overflow-hidden rounded-xl bg-neutral-200" data-animate="scale" data-delay="{{ ($i % 4) * 100 }}"
                style="border-radius: 12px;">
                 <img src="{{ asset('storage/'.$galeri->file) }}" alt="{{ $galeri->keterangan ?? 'Galeri' }}"
                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
