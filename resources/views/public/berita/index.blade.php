@@ -43,7 +43,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-10">
             @foreach($featured->take(3) as $i => $item)
             <article class="{{ $i === 0 ? 'lg:col-span-2' : '' }} bg-white rounded-2xl border border-neutral-100 overflow-hidden card-hover">
-                <div class="{{ $i === 0 ? 'aspect-video' : 'aspect-video' }} overflow-hidden bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
+                <div class="aspect-video overflow-hidden bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
                     @if($item->thumbnail)
                     <img src="{{ Storage::url($item->thumbnail) }}" alt="{{ $item->judul }}" class="w-full h-full object-cover">
                     @else
