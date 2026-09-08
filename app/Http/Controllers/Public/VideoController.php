@@ -13,6 +13,9 @@ class VideoController extends Controller
     {
         $query = Video::active()->with('kategori')->orderByDesc('published_at');
         if ($request->filled('kategori')) $query->whereHas('kategori', fn($q) => $q->where('slug', $request->kategori));
+        if ($request->filled('cari')) {
+            $query->where('judul', 'like', '%' . $request->cari . '%');
+        }
         $videos = $query->paginate(12)->withQueryString();
         $kategoris = Kategori::ofType('video')->get();
         return view('public.video.index', compact('videos', 'kategoris'));
