@@ -18,7 +18,10 @@ class BeritaController extends Controller
         }
 
         if ($request->filled('cari')) {
-            $query->where('judul', 'like', '%' . $request->cari . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->cari . '%')
+                  ->orWhere('ringkasan', 'like', '%' . $request->cari . '%');
+            });
         }
 
         $beritas = $query->paginate(9)->withQueryString();
