@@ -16,7 +16,11 @@ class TvController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['tipe' => 'required|string', 'konten' => 'required|string']);
+        $request->validate([
+            'tipe'   => 'required|string|in:running_text,info,quote,image,video',
+            'konten' => 'required|string',
+            'file'   => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4|max:10240',
+        ]);
         $data = $request->only('tipe','judul','konten','durasi','urutan');
         $data['is_active'] = $request->boolean('is_active', true);
         if ($request->hasFile('file')) $data['file'] = $request->file('file')->store('tv', 'public');
