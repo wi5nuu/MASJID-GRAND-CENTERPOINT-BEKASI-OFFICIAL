@@ -35,13 +35,22 @@ class PengurusController extends Controller
 
     public function update(Request $request, Pengurus $pengurus)
     {
-        $v = $request->validate(['nama' => 'required|string|max:255', 'jabatan' => 'required|string|max:255', 'foto' => 'nullable|image|max:2048']);
+        $v = $request->validate([
+            'nama'    => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'foto'    => 'nullable|image|max:2048',
+            'bio'     => 'nullable|string',
+            'periode' => 'nullable|string|max:100',
+            'email'   => 'nullable|email|max:255',
+            'telepon' => 'nullable|string|max:20',
+            'urutan'  => 'nullable|integer|min:0',
+        ]);
         if ($request->hasFile('foto')) {
             if ($pengurus->foto) Storage::disk('public')->delete($pengurus->foto);
             $v['foto'] = $this->optimizeImage($request->file('foto'), 'pengurus');
         }
         $v['is_active'] = $request->boolean('is_active', true);
-        $pengurus->update(array_merge($v, $request->only('bio','periode','email','telepon','urutan')));
+        $pengurus->update($v);
         return redirect()->route('admin.pengurus.index')->with('success', 'Pengurus berhasil diperbarui.');
     }
 
