@@ -98,6 +98,7 @@ class UserController extends Controller
             'role_id'     => 'required|exists:roles,id',
             'unit_no'     => 'nullable|string|max:10|unique:users,unit_no,'.$user->id,
             'approved_at' => 'nullable|date',
+            'password'    => 'nullable|string|min:8|confirmed',
         ]);
         $data = $request->only('name', 'email', 'role_id', 'unit_no', 'approved_at');
         $data['is_active'] = $request->boolean('is_active', true);
