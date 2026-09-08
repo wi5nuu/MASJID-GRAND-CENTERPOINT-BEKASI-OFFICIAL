@@ -4,32 +4,38 @@
 
 @section('content')
 
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
-    <div class="absolute inset-0 pattern-islamic opacity-20"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span class="inline-block text-xs font-semibold text-primary-200 uppercase tracking-widest mb-3">Informasi</span>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Berita & Artikel</h1>
-        <p class="text-primary-200 text-sm max-w-lg mx-auto">Informasi terbaru seputar kegiatan dan kajian Masjid Grand Centerpoint Bekasi.</p>
+<section class="page-header">
+    <div class="container-xl relative z-10">
+        <div class="max-w-2xl mx-auto text-center">
+            <span class="section-label" style="color: rgba(255,255,255,0.7);">INFORMASI</span>
+            <h1 class="font-heading text-3xl sm:text-5xl font-bold leading-tight mt-2 mb-4" style="color: #ffffff;">Berita & Artikel</h1>
+            <p class="text-white/70 text-sm max-w-lg mx-auto">Informasi terbaru seputar kegiatan dan kajian Masjid Grand Centerpoint Bekasi.</p>
+            <nav class="flex items-center justify-center gap-2 mt-6 text-sm text-white/50">
+                <a href="{{ route('home') }}" class="hover:text-white/80 transition-colors">Beranda</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-white/80">Berita</span>
+            </nav>
+        </div>
     </div>
 </section>
 
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="section-padding bg-white">
+    <div class="container-xl">
 
         {{-- Filter & Search --}}
         <form method="GET" class="flex flex-wrap items-center gap-3 mb-8">
-            <div class="relative flex-1 min-w-[180px]">
+            <div class="relative flex-1 min-w-0 sm:min-w-[180px]">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input type="text" name="cari" value="{{ request('cari') }}" placeholder="Cari berita..."
                     class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
             </div>
-            <select name="kategori" class="px-4 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <select name="kategori" class="w-full sm:w-auto px-3 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <option value="">Semua Kategori</option>
                 @foreach($kategoris as $kat)
                 <option value="{{ $kat->slug }}" {{ request('kategori') == $kat->slug ? 'selected' : '' }}>{{ $kat->nama }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">Cari</button>
+            <button type="submit" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">Cari</button>
         </form>
 
         {{-- Featured --}}

@@ -58,9 +58,8 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
-    <div class="absolute inset-0 pattern-islamic opacity-20"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="page-header">
+    <div class="container-xl relative z-10">
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-primary-300 text-xs mb-4">
             <a href="{{ route('home') }}" class="hover:text-white transition-colors shrink-0">Beranda</a>
             <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -68,16 +67,16 @@
             <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             <span class="text-white min-w-0 truncate">{{ Str::limit($kegiatan->judul, 40) }}</span>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-bold max-w-3xl mb-3" style="color: #ffffff;">{{ $kegiatan->judul }}</h1>
+        <h1 class="font-heading text-2xl sm:text-4xl font-bold max-w-3xl mb-3" style="color: #ffffff;">{{ $kegiatan->judul }}</h1>
         @if($kegiatan->deskripsi)
-        <p class="text-primary-200 text-sm sm:text-base max-w-2xl leading-relaxed">{{ Str::limit(strip_tags($kegiatan->deskripsi), 180) }}</p>
+        <p class="text-white/70 text-sm sm:text-base max-w-2xl leading-relaxed">{{ Str::limit(strip_tags($kegiatan->deskripsi), 180) }}</p>
         @endif
     </div>
 </section>
 
 {{-- Content --}}
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="section-padding bg-white">
+    <div class="container-xl">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {{-- Main --}}

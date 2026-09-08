@@ -1,8 +1,8 @@
 @extends('layouts.public')
 @section('title', 'Donasi '.$program->nama.' — Masjid Grand Centerpoint Bekasi')
 @section('content')
-<section class="py-12 bg-white">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="section-padding bg-white">
+    <div class="container-xl">
         <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-400 mb-6">
             <a href="{{ route('donasi.index') }}" class="hover:text-primary-600 shrink-0">Donasi</a>
             <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>

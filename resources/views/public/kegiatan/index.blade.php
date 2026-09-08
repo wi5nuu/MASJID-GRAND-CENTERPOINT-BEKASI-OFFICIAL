@@ -19,30 +19,36 @@
 
 @section('content')
 
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
-    <div class="absolute inset-0 pattern-islamic opacity-20"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span class="inline-block text-xs font-semibold text-primary-200 uppercase tracking-widest mb-3">Program Masjid</span>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Jadwal Kegiatan</h1>
-        <p class="text-primary-200 text-sm max-w-lg mx-auto">Jadwal lengkap kegiatan rutin dan program islami Masjid Grand Centerpoint Bekasi.</p>
+<section class="page-header">
+    <div class="container-xl relative z-10">
+        <div class="max-w-2xl mx-auto text-center">
+            <span class="section-label" style="color: rgba(255,255,255,0.7);">PROGRAM MASJID</span>
+            <h1 class="font-heading text-3xl sm:text-5xl font-bold leading-tight mt-2 mb-4" style="color: #ffffff;">Jadwal Kegiatan</h1>
+            <p class="text-white/70 text-sm max-w-lg mx-auto">Jadwal lengkap kegiatan rutin dan program islami Masjid Grand Centerpoint Bekasi.</p>
+            <nav class="flex items-center justify-center gap-2 mt-6 text-sm text-white/50">
+                <a href="{{ route('home') }}" class="hover:text-white/80 transition-colors">Beranda</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-white/80">Kegiatan</span>
+            </nav>
+        </div>
     </div>
 </section>
 
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="section-padding bg-white">
+    <div class="container-xl">
 
         {{-- Filter --}}
-        <form method="GET" class="flex flex-wrap sm:flex-nowrap items-center gap-2 mb-8">
-            <select name="kategori" class="w-full sm:w-auto sm:flex-1 sm:min-w-0 px-3 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <form method="GET" class="flex flex-wrap items-center gap-2 mb-8">
+            <select name="kategori" class="w-full sm:flex-1 sm:min-w-0 px-3 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <option value="">Semua Kategori</option>
                 @foreach($kategoris as $kat)
                 <option value="{{ $kat->slug }}" {{ request('kategori') == $kat->slug ? 'selected' : '' }}>{{ $kat->nama }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="flex-1 sm:flex-none shrink-0 bg-primary-600 hover:bg-primary-700 text-white px-3 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors">Filter</button>
-            <a href="{{ route('event.index') }}" class="flex-1 sm:flex-none shrink-0 inline-flex items-center justify-center gap-1.5 border border-primary-600 text-primary-600 hover:bg-primary-50 px-3 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors sm:ml-auto">
+            <button type="submit" class="w-full sm:w-auto shrink-0 bg-primary-600 hover:bg-primary-700 text-white px-3 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors">Filter</button>
+            <a href="{{ route('event.index') }}" class="w-full sm:w-auto shrink-0 inline-flex items-center justify-center gap-1.5 border border-primary-600 text-primary-600 hover:bg-primary-50 px-3 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors sm:ml-auto">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                <span class="sm:hidden">Event</span>
+                <span class="sm:hidden">Lihat Event</span>
                 <span class="hidden sm:inline">Lihat Event Khusus</span>
             </a>
         </form>

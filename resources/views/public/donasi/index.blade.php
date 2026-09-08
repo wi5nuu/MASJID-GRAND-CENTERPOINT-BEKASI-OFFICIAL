@@ -4,17 +4,24 @@
 
 @section('content')
 
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
-    <div class="absolute inset-0 pattern-islamic opacity-20"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p class="font-arabic text-2xl text-gold-300 mb-3" dir="rtl">مَن ذَا الَّذِي يُقْرِضُ اللَّهَ قَرْضًا حَسَنًا</p>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Program Donasi</h1>
-        <p class="text-primary-200 text-sm max-w-lg mx-auto">Salurkan infak dan sedekah Anda untuk kemakmuran masjid dan kemaslahatan umat.</p>
+<section class="page-header">
+    <div class="container-xl relative z-10">
+        <div class="max-w-2xl mx-auto text-center">
+            <p class="font-arabic text-2xl text-gold-300 mb-3" dir="rtl">مَن ذَا الَّذِي يُقْرِضُ اللَّهَ قَرْضًا حَسَنًا</p>
+            <span class="section-label" style="color: rgba(255,255,255,0.7);">PROGRAM DONASI</span>
+            <h1 class="font-heading text-3xl sm:text-5xl font-bold leading-tight mt-2 mb-4" style="color: #ffffff;">Program Donasi</h1>
+            <p class="text-white/70 text-sm max-w-lg mx-auto">Salurkan infak dan sedekah Anda untuk kemakmuran masjid dan kemaslahatan umat.</p>
+            <nav class="flex items-center justify-center gap-2 mt-6 text-sm text-white/50">
+                <a href="{{ route('home') }}" class="hover:text-white/80 transition-colors">Beranda</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-white/80">Donasi</span>
+            </nav>
+        </div>
     </div>
 </section>
 
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="section-padding bg-white">
+    <div class="container-xl">
 
         {{-- Total donasi --}}
         <div class="bg-primary-50 border border-primary-100 rounded-2xl p-5 mb-10 text-center">

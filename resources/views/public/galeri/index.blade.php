@@ -6,12 +6,18 @@
 
 @section('content')
 
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
-    <div class="absolute inset-0 pattern-islamic opacity-20"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span class="inline-block text-xs font-semibold text-primary-200 uppercase tracking-widest mb-3">Media</span>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Galeri Foto</h1>
-        <p class="text-primary-200 text-sm">Dokumentasi kegiatan dan momen di Masjid Grand Centerpoint Bekasi.</p>
+<section class="page-header">
+    <div class="container-xl relative z-10">
+        <div class="max-w-2xl mx-auto text-center">
+            <span class="section-label" style="color: rgba(255,255,255,0.7);">MEDIA</span>
+            <h1 class="font-heading text-3xl sm:text-5xl font-bold leading-tight mt-2 mb-4" style="color: #ffffff;">Galeri Foto</h1>
+            <p class="text-white/70 text-sm max-w-lg mx-auto">Dokumentasi kegiatan dan momen di Masjid Grand Centerpoint Bekasi.</p>
+            <nav class="flex items-center justify-center gap-2 mt-6 text-sm text-white/50">
+                <a href="{{ route('home') }}" class="hover:text-white/80 transition-colors">Beranda</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-white/80">Galeri</span>
+            </nav>
+        </div>
     </div>
 </section>
 
@@ -19,7 +25,7 @@
     $allImages = $galeris->map(fn($g) => ['src' => Storage::url($g->file), 'caption' => $g->judul])->values()->toArray();
 @endphp
 
-<section class="py-12 bg-white" x-data="{
+<section class="section-padding bg-white" x-data="{
     open: false,
     current: '',
     currentCaption: '',
@@ -51,7 +57,7 @@
         }
     }
 }">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container-xl">
 
         {{-- Album Filter --}}
         @if($albums->isNotEmpty())

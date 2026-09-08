@@ -4,26 +4,32 @@
 
 @section('content')
 
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
-    <div class="absolute inset-0 pattern-islamic opacity-20"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span class="inline-block text-xs font-semibold text-primary-200 uppercase tracking-widest mb-3">Media</span>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-3">Video & Kajian</h1>
-        <p class="text-primary-200 text-sm">Rekaman kajian, khutbah, dan ceramah dari Masjid Grand Centerpoint Bekasi.</p>
+<section class="page-header">
+    <div class="container-xl relative z-10">
+        <div class="max-w-2xl mx-auto text-center">
+            <span class="section-label" style="color: rgba(255,255,255,0.7);">MEDIA</span>
+            <h1 class="font-heading text-3xl sm:text-5xl font-bold leading-tight mt-2 mb-4" style="color: #ffffff;">Video & Kajian</h1>
+            <p class="text-white/70 text-sm max-w-lg mx-auto">Rekaman kajian, khutbah, dan ceramah dari Masjid Grand Centerpoint Bekasi.</p>
+            <nav class="flex items-center justify-center gap-2 mt-6 text-sm text-white/50">
+                <a href="{{ route('home') }}" class="hover:text-white/80 transition-colors">Beranda</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-white/80">Video</span>
+            </nav>
+        </div>
     </div>
 </section>
 
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="section-padding bg-white">
+    <div class="container-xl">
 
         <form method="GET" class="flex flex-wrap items-center gap-3 mb-8">
-            <select name="kategori" class="px-4 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <select name="kategori" class="w-full sm:w-auto px-3 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <option value="">Semua Kategori</option>
                 @foreach($kategoris as $kat)
                 <option value="{{ $kat->slug }}" {{ request('kategori') == $kat->slug ? 'selected' : '' }}>{{ $kat->nama }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">Filter</button>
+            <button type="submit" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition-colors">Filter</button>
         </form>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

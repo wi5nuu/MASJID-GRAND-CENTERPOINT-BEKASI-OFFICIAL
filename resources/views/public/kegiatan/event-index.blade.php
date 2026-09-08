@@ -1,15 +1,24 @@
 @extends('layouts.public')
 @section('title', 'Event Khusus — Masjid Grand Centerpoint Bekasi')
 @section('content')
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
-    <div class="absolute inset-0 pattern-islamic opacity-20"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl font-bold mb-3" style="color: #ffffff;">Event Khusus</h1>
-        <p class="text-primary-200 text-sm">Program dan event spesial dari Masjid Grand Centerpoint Bekasi.</p>
+<section class="page-header">
+    <div class="container-xl relative z-10">
+        <div class="max-w-2xl mx-auto text-center">
+            <span class="section-label" style="color: rgba(255,255,255,0.7);">EVENT SPESIAL</span>
+            <h1 class="font-heading text-3xl sm:text-5xl font-bold leading-tight mt-2 mb-4" style="color: #ffffff;">Event Khusus</h1>
+            <p class="text-white/70 text-sm max-w-lg mx-auto">Program dan event spesial dari Masjid Grand Centerpoint Bekasi.</p>
+            <nav class="flex items-center justify-center gap-2 mt-6 text-sm text-white/50">
+                <a href="{{ route('home') }}" class="hover:text-white/80 transition-colors">Beranda</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <a href="{{ route('kegiatan.index') }}" class="hover:text-white/80 transition-colors">Kegiatan</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="text-white/80">Event</span>
+            </nav>
+        </div>
     </div>
 </section>
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="section-padding bg-white">
+    <div class="container-xl">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($events as $event)
             <article class="bg-white rounded-2xl border border-neutral-100 overflow-hidden card-hover">

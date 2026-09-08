@@ -5,9 +5,8 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="bg-gradient-to-br from-primary-800 to-primary-900 relative overflow-hidden py-14">
-    <div class="absolute inset-0 pattern-islamic opacity-20"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="page-header">
+    <div class="container-xl relative z-10">
         <div class="flex items-center gap-2 text-primary-300 text-xs mb-4">
             <a href="{{ route('home') }}" class="hover:text-white transition-colors">Beranda</a>
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -16,13 +15,13 @@
             <span class="text-white">{{ Str::limit($event->judul, 40) }}</span>
         </div>
         <span class="inline-block bg-gold-500 text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">Event Khusus</span>
-        <h1 class="text-2xl sm:text-3xl font-bold max-w-3xl" style="color: #ffffff;">{{ $event->judul }}</h1>
+        <h1 class="font-heading text-2xl sm:text-4xl font-bold max-w-3xl" style="color: #ffffff;">{{ $event->judul }}</h1>
     </div>
 </section>
 
 {{-- Content --}}
-<section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="section-padding bg-white">
+    <div class="container-xl">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {{-- Main --}}
