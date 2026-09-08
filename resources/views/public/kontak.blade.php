@@ -57,7 +57,7 @@
                         </div>
                         <div>
                             <p class="font-semibold text-neutral-900 text-sm mb-1">Telepon</p>
-                            <a href="tel:+62211234567" class="text-neutral-600 text-sm hover:text-primary-600 transition-colors">(021) 1234-5678</a>
+                            <a href="tel:+622112345678" class="text-neutral-600 text-sm hover:text-primary-600 transition-colors">(021) 1234-5678</a>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">

@@ -60,7 +60,7 @@
         "alternateName": "Masjid GCP Bekasi",
         "description": "Masjid Grand Centerpoint Bekasi adalah pusat ibadah, pendidikan Al-Quran, kajian Islam, dan kegiatan sosial di kawasan Apartemen Grand Centerpoint, Bekasi, Jawa Barat.",
         "url": "{{ url('/') }}",
-        "telephone": "+62211234567",
+        "telephone": "+622112345678",
         "email": "masjid@grandcenterpoint.id",
         "logo": "{{ asset('logo_apartemen_grand_centerpoint.png') }}",
         "image": "{{ asset('images/mosque/gcp_herosection.png') }}",
