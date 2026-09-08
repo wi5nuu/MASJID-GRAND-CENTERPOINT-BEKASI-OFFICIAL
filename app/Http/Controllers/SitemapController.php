@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kegiatan;
 use App\Models\Berita;
 use App\Models\Galeri;
+use App\Models\Video;
 use Illuminate\Http\Response;
 
 class SitemapController extends Controller
@@ -13,6 +14,7 @@ class SitemapController extends Controller
     {
         $kegiatans = Kegiatan::active()->select('slug', 'updated_at')->get();
         $beritas   = Berita::published()->select('slug', 'updated_at')->get();
+        $videos    = Video::where('is_active', true)->select('slug', 'updated_at')->get();
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>';
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
@@ -26,6 +28,8 @@ class SitemapController extends Controller
             ['url' => route('event.index'),    'priority' => '0.8',  'changefreq' => 'weekly'],
             ['url' => route('kontak'),         'priority' => '0.7',  'changefreq' => 'monthly'],
             ['url' => route('donasi.index'),   'priority' => '0.8',  'changefreq' => 'monthly'],
+            ['url' => route('berita.index'),   'priority' => '0.9',  'changefreq' => 'daily'],
+            ['url' => route('video.index'),    'priority' => '0.7',  'changefreq' => 'weekly'],
         ];
 
         foreach ($staticPages as $page) {
@@ -53,6 +57,16 @@ class SitemapController extends Controller
             $xml .= '<lastmod>' . optional($berita->updated_at)->toAtomString() . '</lastmod>';
             $xml .= '<changefreq>monthly</changefreq>';
             $xml .= '<priority>0.6</priority>';
+            $xml .= '</url>';
+        }
+
+        // Video dynamic pages
+        foreach ($videos as $video) {
+            $xml .= '<url>';
+            $xml .= '<loc>' . htmlspecialchars(route('video.show', $video->slug)) . '</loc>';
+            $xml .= '<lastmod>' . optional($video->updated_at)->toAtomString() . '</lastmod>';
+            $xml .= '<changefreq>monthly</changefreq>';
+            $xml .= '<priority>0.5</priority>';
             $xml .= '</url>';
         }
 
