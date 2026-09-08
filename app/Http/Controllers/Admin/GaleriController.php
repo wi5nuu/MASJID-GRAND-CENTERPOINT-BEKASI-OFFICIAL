@@ -58,7 +58,12 @@ class GaleriController extends Controller
 
     public function update(Request $request, Galeri $galeri)
     {
-        $request->validate(['judul' => 'required|string|max:255']);
+        $request->validate([
+            'judul'       => 'required|string|max:255',
+            'keterangan'  => 'nullable|string',
+            'album'       => 'nullable|string|max:255',
+            'kategori_id' => 'nullable|exists:kategoris,id',
+        ]);
         $galeri->update($request->only('judul', 'keterangan', 'album', 'kategori_id'));
         return redirect()->route('admin.galeri.index')->with('success', 'Foto berhasil diperbarui.');
     }
