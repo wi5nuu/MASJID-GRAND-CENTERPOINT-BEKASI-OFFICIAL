@@ -74,6 +74,7 @@ class VideoController extends Controller
 
     public function destroy(Video $video)
     {
+        if ($video->thumbnail) Storage::disk('public')->delete($video->thumbnail);
         $video->delete();
         return back()->with('success', 'Video berhasil dihapus.');
     }
