@@ -186,7 +186,8 @@ Alpine.data('announcementPopup', () => ({
 Alpine.data('marqueeBar', () => ({
     paused: false,
     pause() { this.paused = true; },
-    resume() { this.paused = false; }
+    resume() { this.paused = false; },
+    toggle() { this.paused = !this.paused; }
 }));
 
 // Clock for TV display

@@ -68,6 +68,12 @@
             </div>
         </div>
 
+        {{-- Pause/Resume button for mobile --}}
+        <button @click="toggle()" class="shrink-0 flex items-center justify-center w-9 h-9 text-white/70 hover:text-white transition-colors lg:hidden" :aria-label="paused ? 'Putar' : 'Jeda'">
+            <svg x-show="!paused" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
+            <svg x-show="paused" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+
     </div>
 </div>
 
