@@ -110,7 +110,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-neutral-700 mb-1.5">Nomor HP/WA</label>
-                            <input type="tel" name="telepon" value="{{ old('telepon') }}"
+                            <input type="tel" name="telepon" value="{{ old('telepon') }}" inputmode="tel"
                                 class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                                 placeholder="08xx-xxxx-xxxx">
                         </div>
