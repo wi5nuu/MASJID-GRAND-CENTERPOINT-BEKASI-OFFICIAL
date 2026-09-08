@@ -66,7 +66,7 @@
                         </div>
                         <div>
                             <p class="font-semibold text-neutral-900 text-sm mb-1">Email</p>
-                            <a href="mailto:info@masjidgcp.com" class="text-neutral-600 text-sm hover:text-primary-600 transition-colors">info@masjidgcp.com</a>
+                            <a href="mailto:masjid@grandcenterpoint.id" class="text-neutral-600 text-sm hover:text-primary-600 transition-colors">masjid@grandcenterpoint.id</a>
                         </div>
                     </div>
                     <div class="flex items-start gap-4">
