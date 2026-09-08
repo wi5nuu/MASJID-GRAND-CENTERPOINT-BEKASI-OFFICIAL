@@ -81,7 +81,7 @@ Route::post('/newsletter', function (\Illuminate\Http\Request $request) {
     $request->validate(['email' => 'required|email']);
     \App\Models\NewsletterSubscriber::firstOrCreate(['email' => $request->email]);
     return back()->with('success', 'Terima kasih telah mendaftar newsletter kami.');
-})->name('newsletter.subscribe');
+})->name('newsletter.subscribe')->middleware('throttle:3,1');
 
 // ─── TV DISPLAY ───────────────────────────────────────────────────────────────
 
