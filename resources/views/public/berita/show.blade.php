@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('title', $berita->meta_title ?? $berita->judul.' — Masjid Grand Centerpoint Bekasi')
-@section('meta_description', $berita->meta_description ?? $berita->ringkasan)
+@section('meta_description', $berita->meta_description ?? $berita->ringkasan ?? 'Baca berita terbaru dari Masjid Grand Centerpoint Bekasi.')
 
 @section('content')
 
