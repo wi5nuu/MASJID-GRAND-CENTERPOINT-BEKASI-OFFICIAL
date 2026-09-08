@@ -47,7 +47,12 @@ class TvController extends Controller
         return redirect()->route('admin.tv.index')->with('success', 'Konten TV berhasil diperbarui.');
     }
 
-    public function destroy(TvDisplay $tv) { $tv->delete(); return back()->with('success', 'Konten TV dihapus.'); }
+    public function destroy(TvDisplay $tv)
+    {
+        if ($tv->file) Storage::disk('public')->delete($tv->file);
+        $tv->delete();
+        return back()->with('success', 'Konten TV dihapus.');
+    }
     public function show(TvDisplay $tv) { return view('admin.tv.show', compact('tv')); }
 
     private static function getTvSettings(): array
