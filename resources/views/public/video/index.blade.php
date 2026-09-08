@@ -43,7 +43,7 @@
                 <a href="{{ route('video.show', $video->slug) }}" class="block">
                     <div class="aspect-video bg-neutral-900 relative overflow-hidden">
                         @if($video->thumbnail_url)
-                        <img src="{{ $video->thumbnail_url }}" alt="{{ $video->judul }}" class="w-full h-full object-cover">
+                        <img src="{{ $video->thumbnail_url }}" alt="{{ $video->judul }}" class="w-full h-full object-cover" loading="lazy">
                         @else
                         <div class="w-full h-full bg-gradient-to-br from-primary-900 to-primary-700 flex items-center justify-center">
                             <svg class="w-12 h-12 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>
