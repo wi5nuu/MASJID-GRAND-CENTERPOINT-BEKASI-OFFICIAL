@@ -23,7 +23,7 @@
             @forelse($events as $event)
             <article class="bg-white rounded-2xl border border-neutral-100 overflow-hidden card-hover">
                 @if($event->thumbnail)
-                <div class="aspect-video overflow-hidden"><img src="{{ Storage::url($event->thumbnail) }}" alt="{{ $event->judul }}" class="w-full h-full object-cover"></div>
+                <div class="aspect-video overflow-hidden"><img src="{{ Storage::url($event->thumbnail) }}" alt="{{ $event->judul }}" class="w-full h-full object-cover" loading="lazy"></div>
                 @else
                 <div class="aspect-video bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
                     <svg class="w-10 h-10 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>

@@ -36,7 +36,7 @@
             <div class="bg-white rounded-2xl border border-neutral-100 overflow-hidden card-hover">
                 @if($program->thumbnail)
                 <div class="aspect-video overflow-hidden">
-                    <img src="{{ Storage::url($program->thumbnail) }}" alt="{{ $program->nama }}" class="w-full h-full object-cover">
+                    <img src="{{ Storage::url($program->thumbnail) }}" alt="{{ $program->nama }}" class="w-full h-full object-cover" loading="lazy">
                 </div>
                 @else
                 <div class="aspect-video bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
