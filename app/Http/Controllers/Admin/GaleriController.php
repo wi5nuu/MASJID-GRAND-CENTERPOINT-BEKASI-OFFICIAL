@@ -29,7 +29,7 @@ class GaleriController extends Controller
     {
         $request->validate([
             'judul'       => 'required|string|max:255',
-            'files'       => 'required|array|min:1',
+            'files'       => 'required|array|min:1|max:20',
             'files.*'     => 'required|image|mimes:jpg,jpeg,png,webp|max:4096',
             'kategori_id' => 'nullable|exists:kategoris,id',
             'album'       => 'nullable|string|max:255',
