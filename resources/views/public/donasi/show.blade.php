@@ -60,8 +60,8 @@
                         <input type="hidden" name="program_id" value="{{ $program->id }}">
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-neutral-700 mb-1.5">Nama (opsional)</label>
-                                <input type="text" name="nama" placeholder="Hamba Allah"
+                                <label for="donasi-nama" class="block text-sm font-medium text-neutral-700 mb-1.5">Nama (opsional)</label>
+                                <input type="text" name="nama" id="donasi-nama" placeholder="Hamba Allah"
                                     class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
                             </div>
                             <div>
@@ -75,22 +75,22 @@
                                     </button>
                                     @endforeach
                                 </div>
-                                <input type="number" name="jumlah_custom" x-model="customAmount" placeholder="Nominal lainnya (min. Rp 10.000)"
+                                <input type="number" name="jumlah_custom" id="jumlah_custom" x-model="customAmount" placeholder="Nominal lainnya (min. Rp 10.000)"
                                     min="10000" :required="!amount"
                                     class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
                                 <input type="hidden" name="jumlah" :value="finalAmount">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-neutral-700 mb-1.5">Metode Pembayaran</label>
-                                <select name="metode" class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                <label for="donasi-metode" class="block text-sm font-medium text-neutral-700 mb-1.5">Metode Pembayaran</label>
+                                <select name="metode" id="donasi-metode" class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
                                     <option value="transfer">Transfer Bank</option>
                                     <option value="qris">QRIS</option>
                                     <option value="tunai">Tunai</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-neutral-700 mb-1.5">Pesan (opsional)</label>
-                                <textarea name="pesan" rows="2" placeholder="Doa atau pesan..."
+                                <label for="donasi-pesan" class="block text-sm font-medium text-neutral-700 mb-1.5">Pesan (opsional)</label>
+                                <textarea name="pesan" id="donasi-pesan" rows="2" placeholder="Doa atau pesan..."
                                     class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"></textarea>
                             </div>
                             <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-4 rounded-xl transition-colors">
