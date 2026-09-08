@@ -32,13 +32,31 @@ class Kegiatan extends Model
             if (empty($kegiatan->slug)) {
                 $kegiatan->slug = Str::slug($kegiatan->judul);
             }
+            $kegiatan->slug = self::uniqueSlug($kegiatan->slug, $kegiatan->id);
         });
 
         static::updating(function ($kegiatan) {
             if ($kegiatan->isDirty('judul') && empty($kegiatan->slug)) {
                 $kegiatan->slug = Str::slug($kegiatan->judul);
             }
+            if ($kegiatan->isDirty('slug') || $kegiatan->isDirty('judul')) {
+                $kegiatan->slug = self::uniqueSlug($kegiatan->slug, $kegiatan->id);
+            }
         });
+    }
+
+    private static function uniqueSlug(string $slug, ?int $ignoreId = null): string
+    {
+        $original = $slug;
+        $counter = 1;
+        $query = static::where('slug', $slug);
+        if ($ignoreId) $query->where('id', '!=', $ignoreId);
+        while ($query->exists()) {
+            $slug = $original . '-' . $counter++;
+            $query = static::where('slug', $slug);
+            if ($ignoreId) $query->where('id', '!=', $ignoreId);
+        }
+        return $slug;
     }
 
     public function scopeActive($q) { return $q->where('is_active', true); }
