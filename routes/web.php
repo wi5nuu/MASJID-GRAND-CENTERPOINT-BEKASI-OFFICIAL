@@ -66,7 +66,7 @@ Route::prefix('video')->name('video.')->group(function () {
 // Donasi
 Route::prefix('donasi')->name('donasi.')->group(function () {
     Route::get('/', [DonasiController::class, 'index'])->name('index');
-    Route::post('/', [DonasiController::class, 'store'])->name('store');
+    Route::post('/', [DonasiController::class, 'store'])->name('store')->middleware('throttle:5,1');
     // Route literal harus SEBELUM wildcard slug agar tidak ter-intercept
     Route::get('/konfirmasi/{donasi}', [DonasiController::class, 'konfirmasi'])->name('konfirmasi');
     Route::get('/{program:slug}', [DonasiController::class, 'show'])->name('show');
