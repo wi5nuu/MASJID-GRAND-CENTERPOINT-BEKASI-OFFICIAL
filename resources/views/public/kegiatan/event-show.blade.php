@@ -7,8 +7,8 @@
 {{-- Hero --}}
 <section class="page-header">
     <div class="container-xl relative z-10">
-        <div class="flex items-center gap-2 text-primary-300 text-xs mb-4">
-            <a href="{{ route('home') }}" class="hover:text-white transition-colors">Beranda</a>
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-primary-300 text-xs mb-4">
+            <a href="{{ route('home') }}" class="hover:text-white transition-colors shrink-0">Beranda</a>
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             <a href="{{ route('event.index') }}" class="hover:text-white transition-colors">Event</a>
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
