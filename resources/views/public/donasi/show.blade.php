@@ -74,10 +74,10 @@
                                     </button>
                                     @endforeach
                                 </div>
-                                <input type="number" name="jumlah" x-model="customAmount" placeholder="Nominal lainnya (min. Rp 10.000)"
+                                <input type="number" name="jumlah_custom" x-model="customAmount" placeholder="Nominal lainnya (min. Rp 10.000)"
                                     min="10000" :required="!amount"
                                     class="w-full px-4 py-2.5 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                <input type="hidden" name="jumlah_hidden" :value="finalAmount">
+                                <input type="hidden" name="jumlah" :value="finalAmount">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-neutral-700 mb-1.5">Metode Pembayaran</label>
