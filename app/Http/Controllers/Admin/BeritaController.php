@@ -105,6 +105,7 @@ class BeritaController extends Controller
 
     public function destroy(Berita $berita)
     {
+        if ($berita->thumbnail) Storage::disk('public')->delete($berita->thumbnail);
         $berita->delete();
         return back()->with('success', 'Berita berhasil dihapus.');
     }
