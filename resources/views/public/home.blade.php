@@ -140,7 +140,7 @@
                     ['nama' => 'Yasinan & Makan Bersama', 'desc' => 'Kegiatan yasinan rutin diikuti seluruh warga.'],
                     ['nama' => 'Santunan Anak Yatim', 'desc' => 'Program sosial tahunan menyentuh 150–200 penerima.'],
                 ] as $i => $item)
-                <div class="card" data-animate="fade-up" data-delay="{{ $i * 100 }}">
+                <a href="{{ route('kegiatan.index') }}" class="card hover:border-primary-300 hover:shadow-md transition-all" data-animate="fade-up" data-delay="{{ $i * 100 }}">
                     <div class="aspect-video bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center">
                         <div class="icon-circle-lg">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13"/></svg>
@@ -154,7 +154,7 @@
                         <p class="text-xs text-neutral-500 mb-3">{{ $item['desc'] }}</p>
                         <span class="text-xs font-semibold text-primary-600">Selengkapnya →</span>
                     </div>
-                </div>
+                </a>
                 @endforeach
             @endif
         </div>
