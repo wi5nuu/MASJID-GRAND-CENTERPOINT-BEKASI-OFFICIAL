@@ -54,6 +54,11 @@ class PengurusController extends Controller
         return redirect()->route('admin.pengurus.index')->with('success', 'Pengurus berhasil diperbarui.');
     }
 
-    public function destroy(Pengurus $pengurus) { $pengurus->delete(); return back()->with('success', 'Pengurus dihapus.'); }
+    public function destroy(Pengurus $pengurus)
+    {
+        if ($pengurus->foto) Storage::disk('public')->delete($pengurus->foto);
+        $pengurus->delete();
+        return back()->with('success', 'Pengurus dihapus.');
+    }
     public function show(Pengurus $pengurus) { return view('admin.pengurus.show', compact('pengurus')); }
 }
