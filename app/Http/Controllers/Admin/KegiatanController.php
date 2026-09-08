@@ -83,6 +83,7 @@ class KegiatanController extends Controller
 
     public function destroy(Kegiatan $kegiatan)
     {
+        if ($kegiatan->thumbnail) Storage::disk('public')->delete($kegiatan->thumbnail);
         $kegiatan->delete();
         return back()->with('success', 'Kegiatan berhasil dihapus.');
     }
