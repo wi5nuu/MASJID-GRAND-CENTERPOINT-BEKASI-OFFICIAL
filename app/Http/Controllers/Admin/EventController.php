@@ -18,12 +18,22 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        $v = $request->validate(['judul' => 'required|string|max:255', 'tanggal_mulai' => 'required|date', 'deskripsi' => 'nullable|string', 'thumbnail' => 'nullable|image|max:2048']);
+        $v = $request->validate([
+            'judul'        => 'required|string|max:255',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'waktu_mulai'  => 'nullable|date_format:H:i',
+            'lokasi'       => 'nullable|string|max:255',
+            'kuota'        => 'nullable|integer|min:0',
+            'deskripsi'    => 'nullable|string',
+            'konten'       => 'nullable|string',
+            'thumbnail'    => 'nullable|image|max:2048',
+        ]);
         $v['slug'] = Str::slug($request->judul);
         $v['is_active'] = $request->boolean('is_active', true);
         $v['is_featured'] = $request->boolean('is_featured');
         if ($request->hasFile('thumbnail')) $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'event');
-        Event::create(array_merge($v, $request->only('tanggal_selesai','waktu_mulai','lokasi','kuota','konten')));
+        Event::create($v);
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil ditambahkan.');
     }
 
@@ -31,13 +41,23 @@ class EventController extends Controller
 
     public function update(Request $request, Event $event)
     {
-        $v = $request->validate(['judul' => 'required|string|max:255', 'tanggal_mulai' => 'required|date', 'thumbnail' => 'nullable|image|max:2048']);
+        $v = $request->validate([
+            'judul'        => 'required|string|max:255',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal_mulai',
+            'waktu_mulai'  => 'nullable|date_format:H:i',
+            'lokasi'       => 'nullable|string|max:255',
+            'kuota'        => 'nullable|integer|min:0',
+            'deskripsi'    => 'nullable|string',
+            'konten'       => 'nullable|string',
+            'thumbnail'    => 'nullable|image|max:2048',
+        ]);
         $v['is_active'] = $request->boolean('is_active', true);
         if ($request->hasFile('thumbnail')) {
             if ($event->thumbnail) Storage::disk('public')->delete($event->thumbnail);
             $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'event');
         }
-        $event->update(array_merge($v, $request->only('tanggal_selesai','waktu_mulai','lokasi','kuota','konten','deskripsi')));
+        $event->update($v);
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui.');
     }
 
