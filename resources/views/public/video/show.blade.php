@@ -1,6 +1,7 @@
 @extends('layouts.public')
 
 @section('title', $video->judul.' — Video Masjid Grand Centerpoint Bekasi')
+@section('meta_description', $video->deskripsi ?? 'Tonton video kajian dari Masjid Grand Centerpoint Bekasi.')
 
 @section('content')
 <section class="page-header">

@@ -1,6 +1,7 @@
 @extends('layouts.public')
 
 @section('title', $event->judul . ' — Masjid Grand Centerpoint Bekasi')
+@section('meta_description', $event->deskripsi ?? 'Info event dari Masjid Grand Centerpoint Bekasi.')
 
 @section('content')
 

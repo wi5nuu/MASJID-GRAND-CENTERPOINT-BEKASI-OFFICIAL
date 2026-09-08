@@ -1,6 +1,7 @@
 @extends('layouts.public')
 
 @section('title', 'Video & Kajian — Masjid Grand Centerpoint Bekasi')
+@section('meta_description', 'Tonton video kajian, ceramah, dan kegiatan Masjid Grand Centerpoint Bekasi.')
 
 @section('content')
 

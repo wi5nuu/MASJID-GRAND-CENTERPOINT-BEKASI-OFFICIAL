@@ -1,5 +1,6 @@
 @extends('layouts.public')
 @section('title', 'Event Khusus — Masjid Grand Centerpoint Bekasi')
+@section('meta_description', 'Lihat event khusus dan kegiatan spesial Masjid Grand Centerpoint Bekasi.')
 @section('content')
 <section class="page-header">
     <div class="container-xl relative z-10">

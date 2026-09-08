@@ -1,5 +1,6 @@
 @extends('layouts.public')
 @section('title', 'Donasi '.$program->nama.' — Masjid Grand Centerpoint Bekasi')
+@section('meta_description', $program->deskripsi ?? 'Dukung program '.$program->nama.' di Masjid Grand Centerpoint Bekasi.')
 @section('content')
 <section class="page-header">
     <div class="container-xl relative z-10">

@@ -1,6 +1,7 @@
 @extends('layouts.public')
 
 @section('title', 'Donasi — Masjid Grand Centerpoint Bekasi')
+@section('meta_description', 'Dukung program-program Masjid Grand Centerpoint Bekasi melalui donasi. Pilih program donasi yang sesuai dengan niat Anda.')
 
 @section('content')
 
