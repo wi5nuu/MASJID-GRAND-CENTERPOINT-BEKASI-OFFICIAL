@@ -24,7 +24,28 @@ class DonasiProgram extends Model
         parent::boot();
         static::creating(function ($model) {
             if (empty($model->slug)) $model->slug = Str::slug($model->nama);
+            $model->slug = self::uniqueSlug($model->slug, $model->id);
         });
+        static::updating(function ($model) {
+            if ($model->isDirty('slug') || $model->isDirty('nama')) {
+                if (empty($model->slug)) $model->slug = Str::slug($model->nama);
+                $model->slug = self::uniqueSlug($model->slug, $model->id);
+            }
+        });
+    }
+
+    private static function uniqueSlug(string $slug, ?int $ignoreId = null): string
+    {
+        $original = $slug;
+        $counter = 1;
+        $query = static::where('slug', $slug);
+        if ($ignoreId) $query->where('id', '!=', $ignoreId);
+        while ($query->exists()) {
+            $slug = $original . '-' . $counter++;
+            $query = static::where('slug', $slug);
+            if ($ignoreId) $query->where('id', '!=', $ignoreId);
+        }
+        return $slug;
     }
 
     public function donasis() { return $this->hasMany(Donasi::class, 'program_id'); }
