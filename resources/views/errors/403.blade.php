@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>403 — Akses Ditolak</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="font-sans bg-neutral-50 text-neutral-800 antialiased min-h-screen flex items-center justify-center">
+@extends('layouts.public')
+
+@section('title', '403 — Akses Ditolak')
+
+@section('content')
+<div class="min-h-[60vh] flex items-center justify-center px-4 py-20 bg-neutral-50">
     <div class="text-center px-4 max-w-md mx-auto">
         {{-- Arabic --}}
         <p class="font-arabic text-2xl text-gold-500 mb-6" dir="rtl">إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ</p>
@@ -35,8 +30,6 @@
                 Ke Beranda
             </a>
         </div>
-
-        <p class="mt-10 text-xs text-neutral-400">Masjid Grand Centerpoint Bekasi</p>
     </div>
-</body>
-</html>
+</div>
+@endsection
