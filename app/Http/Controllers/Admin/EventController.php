@@ -29,7 +29,13 @@ class EventController extends Controller
             'konten'       => 'nullable|string',
             'thumbnail'    => 'nullable|image|max:2048',
         ]);
-        $v['slug'] = Str::slug($request->judul);
+        $slug = Str::slug($request->judul);
+        $originalSlug = $slug;
+        $counter = 1;
+        while (Event::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $counter++;
+        }
+        $v['slug'] = $slug;
         $v['is_active'] = $request->boolean('is_active', true);
         $v['is_featured'] = $request->boolean('is_featured');
         if ($request->hasFile('thumbnail')) $v['thumbnail'] = $this->optimizeImage($request->file('thumbnail'), 'event');
