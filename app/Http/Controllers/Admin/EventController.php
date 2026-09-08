@@ -61,6 +61,11 @@ class EventController extends Controller
         return redirect()->route('admin.event.index')->with('success', 'Event berhasil diperbarui.');
     }
 
-    public function destroy(Event $event) { $event->delete(); return back()->with('success', 'Event dihapus.'); }
+    public function destroy(Event $event)
+    {
+        if ($event->thumbnail) Storage::disk('public')->delete($event->thumbnail);
+        $event->delete();
+        return back()->with('success', 'Event dihapus.');
+    }
     public function show(Event $event) { return view('admin.event.show', compact('event')); }
 }
