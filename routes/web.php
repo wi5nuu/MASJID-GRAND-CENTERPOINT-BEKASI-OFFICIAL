@@ -45,7 +45,7 @@ Route::prefix('berita')->name('berita.')->group(function () {
 // Kegiatan & Event
 Route::prefix('kegiatan')->name('kegiatan.')->group(function () {
     Route::get('/', [KegiatanController::class, 'index'])->name('index');
-    Route::get('/{kegiatan}', [KegiatanController::class, 'show'])->name('show');
+    Route::get('/{kegiatan:slug}', [KegiatanController::class, 'show'])->name('show');
 });
 
 Route::prefix('event')->name('event.')->group(function () {
