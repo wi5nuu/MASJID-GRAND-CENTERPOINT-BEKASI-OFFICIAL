@@ -47,12 +47,23 @@ class DonasiController extends Controller
 
     public function update(Request $request, Donasi $donasi)
     {
-        $request->validate(['status' => 'required|in:pending,confirmed,rejected']);
+        $request->validate([
+            'status'   => 'required|in:pending,confirmed,rejected',
+            'nama'     => 'nullable|string|max:255',
+            'jumlah'   => 'required|numeric|min:1000',
+            'metode'   => 'required|in:transfer,qris,tunai,lainnya',
+            'program_id' => 'nullable|exists:donasi_programs,id',
+        ]);
 
         $wasConfirmed = $donasi->status === 'confirmed';
         $nowConfirmed = $request->status === 'confirmed';
 
-        $data = $request->only('status', 'nama', 'jumlah', 'metode', 'pesan');
+        // Only allow status/pesan changes when already confirmed (prevent amount tampering)
+        if ($wasConfirmed) {
+            $data = $request->only('status', 'pesan');
+        } else {
+            $data = $request->only('status', 'nama', 'jumlah', 'metode', 'program_id', 'pesan');
+        }
 
         // Set confirmed_at saat pertama kali status di-set ke confirmed
         if ($nowConfirmed && !$donasi->confirmed_at) {
