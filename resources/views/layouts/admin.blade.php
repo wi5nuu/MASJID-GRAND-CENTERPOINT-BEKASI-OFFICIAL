@@ -46,7 +46,7 @@
 
                 {{-- Flash Messages --}}
                 @if(session('success'))
-                <div class="mb-4 flex items-center gap-3 bg-primary-50 border border-primary-200 text-primary-800 rounded-lg px-4 py-3 text-sm">
+                <div class="mb-4 flex items-center gap-3 bg-primary-50 border border-primary-200 text-primary-800 rounded-lg px-4 py-3 text-sm" x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                     <svg class="w-5 h-5 text-primary-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     {{ session('success') }}
                 </div>
