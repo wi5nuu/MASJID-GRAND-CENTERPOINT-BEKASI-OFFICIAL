@@ -74,7 +74,7 @@ Route::prefix('donasi')->name('donasi.')->group(function () {
 
 // Kontak
 Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
-Route::post('/kontak', [KontakController::class, 'kirim'])->name('kontak.kirim');
+Route::post('/kontak', [KontakController::class, 'kirim'])->name('kontak.kirim')->middleware('throttle:10,1');
 
 // Newsletter
 Route::post('/newsletter', function (\Illuminate\Http\Request $request) {
