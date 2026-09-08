@@ -102,17 +102,17 @@
     <div x-show="open" x-cloak @keydown.escape.window="close()"
         class="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
         x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-        <button @click="close()" class="absolute top-4 right-4 text-white/70 hover:text-white p-2 transition-colors">
+        <button @click="close()" class="absolute top-4 right-4 text-white/70 hover:text-white p-2 transition-colors" aria-label="Tutup galeri">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
-        <button @click="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors">
+        <button @click="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors" aria-label="Sebelumnya">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
         </button>
         <div class="max-w-4xl w-full">
             <img :src="current" :alt="currentCaption" class="max-h-[80vh] mx-auto rounded-xl object-contain">
             <p class="text-white/70 text-sm text-center mt-3" x-text="currentCaption"></p>
         </div>
-        <button @click="next()" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors">
+        <button @click="next()" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors" aria-label="Selanjutnya">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </button>
     </div>
