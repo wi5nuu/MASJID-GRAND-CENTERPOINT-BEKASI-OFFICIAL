@@ -88,7 +88,7 @@
                         <div class="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center shrink-0">
                             <svg class="w-3 h-3 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         </div>
-                        <p class="text-xs text-neutral-400">masjid@grandcenterpoint.id</p>
+                        <a href="mailto:masjid@grandcenterpoint.id" class="text-xs text-neutral-400 hover:text-primary-400 transition-colors">masjid@grandcenterpoint.id</a>
                     </li>
                 </ul>
 
