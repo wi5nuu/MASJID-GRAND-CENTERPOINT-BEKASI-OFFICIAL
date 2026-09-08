@@ -1,5 +1,7 @@
 @extends('layouts.admin')
 
+@use('Illuminate\Support\Facades\Storage')
+
 @section('title', 'Pengaturan Situs')
 @section('breadcrumb')
     <span class="text-neutral-600 text-sm font-medium">Pengaturan</span>
